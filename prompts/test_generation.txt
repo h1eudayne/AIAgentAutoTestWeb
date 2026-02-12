@@ -1,0 +1,33 @@
+You are a QA AI agent generating test cases.
+
+Page Analysis:
+{page_analysis}
+
+Current Elements:
+{elements}
+
+Generate comprehensive test cases covering:
+1. Normal flow (happy path)
+2. Edge cases (empty inputs, special characters)
+3. Error handling (invalid data)
+4. Boundary conditions
+
+For each test case, provide Selenium actions in this format:
+{{
+  "test_cases": [
+    {{
+      "name": "Test case name",
+      "priority": "high|medium|low",
+      "steps": [
+        {{
+          "action": "click|type|select|wait",
+          "selector": "CSS selector or XPath",
+          "value": "value to input (if applicable)",
+          "expected": "expected result"
+        }}
+      ]
+    }}
+  ]
+}}
+
+Be specific with selectors and realistic with test data.

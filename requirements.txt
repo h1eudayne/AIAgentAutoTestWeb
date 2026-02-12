@@ -1,0 +1,9 @@
+# AI Web Testing Agent Dependencies
+selenium==4.16.0
+webdriver-manager==4.0.1
+llama-cpp-python==0.2.27
+beautifulsoup4==4.12.2
+lxml==4.9.3
+Pillow==10.1.0
+python-dotenv==1.0.0
+colorama==0.4.6

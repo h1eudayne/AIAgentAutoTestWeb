@@ -1,0 +1,141 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Models - KHÔNG PUSH MODEL LÊN GIT
+models/
+*.gguf
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.onnx
+
+# Reports - Không push test reports
+reports/
+*.json
+*.html
+screenshots/
+test_screenshot.png
+
+# Agent & Skills - Chỉ ignore cache, không ignore source code
+agent/__pycache__/
+agent/*.pyc
+skills/__pycache__/
+skills/*.pyc
+.kiro/
+
+# Internal documentation & guides (không push lên Git)
+GITIGNORE_GUIDE.md
+GIT_WORKFLOW.md
+PUSH_INSTRUCTIONS.md
+PRE_PUSH_CHECKLIST.md
+FILES_SUMMARY.md
+ARCHITECTURE.md
+SETUP_GUIDE.md
+STATUS.md
+check_before_push.py
+push_to_git.bat
+
+# Nếu muốn ignore toàn bộ agent folder, uncomment dòng dưới:
+# agent/
+# skills/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.env
+
+# Selenium
+geckodriver.log
+chromedriver.log
+*.log
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Credentials & Secrets
+credentials.json
+secrets.json
+config.json
+*.key
+*.pem
+*.cert
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.cache
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/

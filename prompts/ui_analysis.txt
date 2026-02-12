@@ -1,0 +1,35 @@
+You are a QA AI agent analyzing a web page.
+
+Current Page Information:
+URL: {url}
+Title: {title}
+
+Page Structure:
+{dom_structure}
+
+Visible Text:
+{visible_text}
+
+Interactive Elements:
+{interactive_elements}
+
+Task: Analyze this page and identify:
+1. Main purpose of the page (login, search, form, checkout, etc.)
+2. Key user actions possible on this page
+3. Input fields and their expected data types
+4. Buttons and their functions
+5. Potential edge cases to test
+
+Respond in JSON format:
+{{
+  "page_type": "login|search|form|checkout|other",
+  "main_purpose": "brief description",
+  "user_actions": ["action1", "action2"],
+  "test_scenarios": [
+    {{
+      "name": "scenario name",
+      "priority": "high|medium|low",
+      "steps": ["step1", "step2"]
+    }}
+  ]
+}}
