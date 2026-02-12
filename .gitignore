@@ -41,6 +41,10 @@ reports/
 screenshots/
 test_screenshot.png
 
+# Documentation - Ignore all markdown files except README.md
+*.md
+!README.md
+
 # Agent & Skills - Chỉ ignore cache, không ignore source code
 agent/__pycache__/
 agent/*.pyc
