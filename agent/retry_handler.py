@@ -230,6 +230,10 @@ class RetryableAction:
     def click_with_retry(self, selector: str, element_info: Dict = None) -> Dict:
         """Click với retry thông minh"""
         
+        # Handle None or empty selector
+        if selector is None:
+            selector = ""
+        
         def click_action(scroll_first=False, **kwargs):
             if scroll_first:
                 try:
@@ -242,9 +246,10 @@ class RetryableAction:
             return self.browser.execute_action("click", selector)
         
         # Try original selector first
+        selector_display = selector[:50] if selector else "(empty)"
         result = self.retry_handler.execute_with_retry(
             click_action,
-            f"Click: {selector[:50]}"
+            f"Click: {selector_display}"
         )
         
         # If failed, try alternative selectors
@@ -266,6 +271,10 @@ class RetryableAction:
     
     def type_with_retry(self, selector: str, value: str, element_info: Dict = None) -> Dict:
         """Type với retry thông minh"""
+        
+        # Handle None or empty selector
+        if selector is None:
+            selector = ""
         
         def type_action(**kwargs):
             return self.browser.execute_action("type", selector, value)

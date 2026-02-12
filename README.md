@@ -6,6 +6,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Selenium](https://img.shields.io/badge/Selenium-4.0+-green.svg)](https://www.selenium.dev/)
 [![LLaMA](https://img.shields.io/badge/LLaMA-3-orange.svg)](https://llama.meta.com/)
+[![Tests](https://img.shields.io/badge/Tests-69%20passed-brightgreen.svg)](tests/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
@@ -26,26 +27,26 @@
 
 ## ✨ Tính Năng
 
-### ✅ Đã Hoàn Thành
+### ✅ Tính Năng Chính
 
 | Tính năng | Mô tả | Status |
 |-----------|-------|--------|
-| 🔁 **Retry Loop** | Tự động retry khi fail với smart strategies | ✅ Done |
-| 🧠 **State Memory** | Học từ test trước, nhớ selectors tốt/xấu | ✅ Done |
-| 🗺️ **Multi-step Planning** | Lập kế hoạch test phức tạp với dependencies | ✅ Done |
-| 🤖 **AI Reasoning** | LLaMA 3 phân tích UI và sinh test cases | ✅ Done |
-| ⚡ **Fast Mode** | Rule-based testing không cần LLM | ✅ Done |
-| 📊 **Smart Reports** | JSON + colored console reports | ✅ Done |
+| 🔁 **Retry Loop** | Tự động retry với 5 smart strategies | ✅ |
+| 🧠 **State Memory** | Học từ test trước, nhớ selectors tốt/xấu | ✅ |
+| 🗺️ **Multi-step Planning** | Test plans phức tạp với dependencies | ✅ |
+| 🤖 **AI Reasoning** | LLaMA 3 phân tích UI và sinh test cases | ✅ |
+| ⚡ **Fast Mode** | Rule-based testing không cần LLM | ✅ |
+| 🧪 **Test Suite** | 69 tests với 100% pass rate | ✅ |
 
-### 🚧 Roadmap (Coming Soon)
+### 🚧 Roadmap
 
-| Tính năng | Mô tả | Status |
-|-----------|-------|--------|
-| 📊 **Coverage Tracking** | Theo dõi test coverage tự động | 🔜 Planned |
-| 🛠 **Self-healing Selector** | Tự sửa selector khi DOM thay đổi | 🔜 Planned |
-| 📸 **Screenshot Diff** | So sánh visual regression | 🔜 Planned |
-| 🌐 **Network Monitoring** | Theo dõi API calls và performance | 🔜 Planned |
-| 🔄 **CI/CD Integration** | Tích hợp GitHub Actions, Jenkins | 🔜 Planned |
+| Tính năng | Mô tả | Priority |
+|-----------|-------|----------|
+| 📊 **Coverage Tracking** | Theo dõi test coverage tự động | High |
+| 🛠 **Self-healing Selector** | Tự sửa selector khi DOM thay đổi | High |
+| 📸 **Screenshot Diff** | So sánh visual regression | Medium |
+| 🌐 **Network Monitoring** | Theo dõi API calls và performance | Medium |
+| 🔄 **CI/CD Integration** | GitHub Actions, Jenkins | Low |
 
 ---
 
@@ -62,32 +63,37 @@ cd AIAgentAutoTestWeb
 pip install -r requirements.txt
 ```
 
-### 2. Chạy Test (Fast Mode - Không Cần LLM)
+### 2. Chạy Test
 
+**Fast Mode (Không cần LLM):**
 ```bash
 python main_fast.py https://fe-history-mind-ai.vercel.app/
 ```
 
-**Kết quả:**
-```
-🤖 Initializing Fast Web Testing Agent...
-✓ Retry logic enabled (max 3 attempts per action)
-✓ State memory enabled (learns from past tests)
-
-💾 Memory: Tested this page 10 times before (Pass rate: 80.0%)
-
-📊 SUMMARY
-  Total Tests: 5
-  ✓ Passed: 4
-  ✗ Failed: 1
-  Pass Rate: 80.0%
-```
-
-### 3. Chạy Test (AI Mode - Với LLaMA 3)
-
+**AI Mode (Với LLaMA 3):**
 ```bash
 # Download model trước (xem DOWNLOAD_MODEL.md)
 python main.py https://example.com
+```
+
+**Kết quả:**
+```
+🤖 Fast Web Testing Agent
+✓ Retry logic enabled (max 3 attempts)
+✓ State memory enabled
+
+💾 Memory: Tested 10 times (Pass rate: 80.0%)
+
+📊 SUMMARY
+  Total: 5 | ✓ Passed: 4 | ✗ Failed: 1
+  Pass Rate: 80.0%
+```
+
+### 3. Chạy Test Suite
+
+```bash
+python run_tests.py
+# 69 tests, 100% pass rate
 ```
 
 ---
@@ -111,767 +117,297 @@ driver.find_element(By.CSS_SELECTOR, "button").click()
 ✓ Attempt 2: #submit-btn → Success!
 ```
 
-**Retry Strategies:**
-- ⏱️ **Timeout** → Tăng wait time
-- 🔍 **Element not found** → Thử alternative selectors
-- 🔄 **Stale element** → Refresh và retry
-- 🖱️ **Click intercepted** → Scroll to element trước
-- ❌ **Invalid selector** → Chuyển sang CSS selector
+**5 Smart Strategies:**
+1. ⏱️ **Timeout** → Tăng wait time
+2. 🔍 **Element not found** → Thử alternative selectors
+3. 🔄 **Stale element** → Refresh và retry
+4. 🖱️ **Click intercepted** → Scroll to element
+5. ❌ **Invalid selector** → Chuyển sang CSS selector
 
-**Kết quả:**
-```
-🔄 RETRY STATISTICS
-  Total actions: 5
-  Success rate: 80.0%
-  Avg attempts: 1.4
-  Failed after retries: 1
-```
-
-### Cách Sử Dụng
+**Kết quả:** Success rate 80%, avg 1.4 attempts/action
 
 ```bash
-# Bật retry (mặc định)
-python main_fast.py https://example.com
-
-# Tắt retry
-python main_fast.py https://example.com --no-retry
+# Bật/tắt retry
+python main_fast.py URL              # Bật (mặc định)
+python main_fast.py URL --no-retry   # Tắt
 ```
 
 ---
 
-## 🧠 State Memory - Agent Học Từ Kinh Nghiệm
+## 🧠 State Memory - Học Từ Kinh Nghiệm
 
-### Vấn Đề: Test Automation Không Học
+### Vấn Đề
 
-Selenium/Playwright truyền thống:
-- ❌ Mỗi lần chạy đều như lần đầu
-- ❌ Không nhớ selector nào work/fail
+Test automation truyền thống không học:
+- ❌ Mỗi lần chạy như lần đầu
+- ❌ Không nhớ selector work/fail
 - ❌ Lặp lại sai lầm cũ
 
-### Giải Pháp: State Memory System
-
-Agent nhớ và học từ mỗi lần test:
+### Giải Pháp
 
 **Lần 1:**
 ```
-Testing button...
-  ✗ button:nth-of-type(5) → Failed
-  ✗ button:nth-of-type(3) → Failed
-  ✓ #submit-btn → Success
+✗ button:nth-of-type(5) → Failed
+✗ button:nth-of-type(3) → Failed
+✓ #submit-btn → Success
 ```
-→ Memory ghi nhớ: "#submit-btn work, tránh button:nth-of-type(5)"
+→ Memory ghi nhớ: "#submit-btn work"
 
 **Lần 2:**
 ```
-💾 Memory: Tested this page 5 times before (Pass rate: 80.0%)
-💡 Using remembered selector: #submit-btn
-  ✓ Success (no retry needed!)
+💾 Memory: Tested 5 times (Pass rate: 80.0%)
+💡 Using: #submit-btn
+✓ Success (no retry!)
 ```
-→ Agent đã thông minh hơn! 🎯
+→ Agent thông minh hơn! 🎯
 
-### Memory Lưu Gì?
+### Memory Files
 
 ```
 memory/
-├── selector_memory.json    # Selectors thành công/thất bại
-├── test_history.json       # Lịch sử tất cả test
-└── page_patterns.json      # Cấu trúc page đã học
+├── selector_memory.json    # Selectors success/fail
+├── test_history.json       # Test history (1000 entries)
+└── page_patterns.json      # Page structures
 ```
 
-**Ví dụ selector_memory.json:**
-```json
-{
-  "71a1340078c2": {
-    "url": "https://example.com",
-    "selectors": {
-      "button": [
-        {
-          "selector": "#submit-btn",
-          "success_count": 15,
-          "last_used": "2026-02-12T12:00:00"
-        }
-      ]
-    },
-    "failed_selectors": {
-      "button": [
-        {
-          "selector": "button:nth-of-type(5)",
-          "error": "Element not found",
-          "timestamp": "2026-02-12T11:00:00"
-        }
-      ]
-    }
-  }
-}
-```
-
-### Cách Sử Dụng
+### Sử Dụng
 
 ```bash
-# 1. Chạy test (memory tự động hoạt động)
-python main_fast.py https://example.com
-
-# 2. Xem memory đã học được gì
-python view_memory.py
-
-# 3. Demo tự động (chạy 3 lần liên tiếp)
-python run_memory_demo.py
-
-# 4. Tắt memory nếu cần
-python main_fast.py https://example.com --no-memory
+python main_fast.py URL              # Memory tự động
+python view_memory.py                # Xem memory
+python run_memory_demo.py            # Demo 3 lần
+python main_fast.py URL --no-memory  # Tắt memory
 ```
 
-### Kết Quả Thực Tế
-
-```
-💾 MEMORY STATISTICS
-  Pages remembered: 1
-  Tests in history: 15
-  Pass rate: 80.0%
-  Memory size: 7.16 KB
-
-🎯 BEST SELECTORS
-  button:
-    • #submit-btn (used 15 times)
-    • button:nth-of-type(1) (used 8 times)
-
-⚠️ AVOID SELECTORS
-  button:
-    • button:nth-of-type(5) (failed 3 times)
-```
-
-**Lợi ích:**
-- 🚀 Test nhanh hơn (ít retry)
-- 🎯 Chính xác hơn (dùng best selectors)
-- 📈 Pass rate tăng dần
-- 🧠 Agent học và cải thiện liên tục
+**Lợi ích:** Test nhanh hơn, chính xác hơn, pass rate tăng dần
 
 ---
 
-## 🗺️ Multi-step Planning - Test Plans Phức Tạp
+## 🗺️ Multi-step Planning
 
-### Vấn Đề: Test Đơn Giản Không Đủ
+### Vấn Đề
 
-Test automation truyền thống:
-- ❌ Mỗi test case độc lập
+- ❌ Test cases độc lập
 - ❌ Không quản lý dependencies
 - ❌ Khó test user flows phức tạp
-- ❌ Không tối ưu thứ tự thực thi
 
-### Giải Pháp: Multi-step Planning
+### Giải Pháp
 
-Tạo test plans với dependencies và thực thi thông minh:
-
-**Ví dụ: E-commerce Checkout Flow**
+Test plans với dependencies:
 
 ```python
 from agent.multi_step_planner import MultiStepPlanner
 
 planner = MultiStepPlanner()
 
-# Sử dụng template có sẵn
+# Template có sẵn
 plan = planner.create_plan_from_template("e_commerce_checkout", "plan_001")
 
-# Hoặc tạo custom plan
+# Hoặc custom plan
 steps = [
-    {
-        "id": "step1",
-        "name": "Add item to cart",
-        "type": "click",
-        "selector": ".add-to-cart",
-        "depends_on": []
-    },
-    {
-        "id": "step2",
-        "name": "Go to cart",
-        "type": "click",
-        "selector": "#cart-icon",
-        "depends_on": ["step1"]  # Phụ thuộc vào step1
-    },
-    {
-        "id": "step3",
-        "name": "Proceed to checkout",
-        "type": "click",
-        "selector": "#checkout-btn",
-        "depends_on": ["step2"]  # Phụ thuộc vào step2
-    }
+    {"id": "step1", "name": "Add to cart", "type": "click", 
+     "selector": ".add-to-cart", "depends_on": []},
+    {"id": "step2", "name": "Go to cart", "type": "click",
+     "selector": "#cart-icon", "depends_on": ["step1"]},
+    {"id": "step3", "name": "Checkout", "type": "click",
+     "selector": "#checkout-btn", "depends_on": ["step2"]}
 ]
 
-plan = planner.create_custom_plan("checkout_001", "Checkout Flow", 
-                                  "Complete checkout process", steps)
+plan = planner.create_custom_plan("checkout_001", "Checkout", 
+                                  "Checkout flow", steps)
 ```
 
-### Templates Có Sẵn
+### Templates
+
+4 templates có sẵn: `login_flow`, `form_submission`, `search_flow`, `e_commerce_checkout`
 
 ```python
 planner.list_templates()
-# ['login_flow', 'form_submission', 'search_flow', 'e_commerce_checkout']
 ```
 
-**1. Login Flow**
-```
-step1: Navigate to login page
-  └─> step2: Enter username
-      └─> step3: Enter password
-          └─> step4: Click login
-              └─> step5: Verify success
-```
-
-**2. Form Submission**
-```
-step1: Fill first name ─┐
-step2: Fill last name  ─┤
-step3: Fill email      ─┼─> step5: Submit form
-step4: Select country  ─┘       └─> step6: Verify
-```
-
-**3. E-commerce Checkout**
-```
-step1: Add to cart
-  └─> step2: Go to cart
-      └─> step3: Checkout
-          └─> step4: Shipping
-              └─> step5: Payment
-                  └─> step6: Confirm
-```
-
-### Thực Thi Plan
+### Thực Thi
 
 ```python
 from agent.multi_step_executor import MultiStepExecutor
-from tools.browser import BrowserController
 
-browser = BrowserController()
 executor = MultiStepExecutor(browser, enable_retry=True, enable_memory=True)
-
-# Execute plan
 result = executor.execute_plan(plan, url="https://example.com")
-
-# Kết quả
-print(f"Success rate: {result['success_rate']}")
-print(f"Completed: {result['completed']}/{result['total_steps']}")
-print(f"Duration: {result['duration']:.2f}s")
 ```
 
 ### Tính Năng
 
-✅ **Dependency Management**
-- Steps tự động chờ dependencies hoàn thành
-- Phát hiện circular dependencies
-- Skip steps khi dependency fail
-
-✅ **Parallel Execution**
-- Steps không phụ thuộc chạy song song
-- Tối ưu thời gian thực thi
-
-✅ **Smart Retry**
-- Tích hợp Retry Handler
-- Retry từng step riêng biệt
-
-✅ **Memory Integration**
-- Học từ plans trước
-- Nhớ best selectors cho từng step
-
-✅ **Progress Tracking**
-- Real-time progress updates
-- Detailed step-by-step logs
-
-### Visualize Plan
-
-```python
-print(planner.visualize_plan(plan))
-```
-
-**Output:**
-```
-============================================================
-📋 Test Plan: E-commerce Checkout Flow
-============================================================
-Description: Complete checkout process from cart to payment
-Priority: high
-Progress: 3/9 (33.3%)
-
-Steps:
-------------------------------------------------------------
-1. ✅ Add item to cart (click)
-   └─ Selector: .add-to-cart
-
-2. ✅ Go to cart (click)
-   └─ Depends on: step1
-   └─ Selector: #cart-icon
-
-3. ✅ Proceed to checkout (click)
-   └─ Depends on: step2
-   └─ Selector: #checkout-btn
-
-4. ⏳ Fill shipping address (type)
-   └─ Depends on: step3
-   └─ Selector: #address
-   └─ Value: 123 Main St
-
-5. ⏳ Select shipping method (click)
-   └─ Depends on: step4
-   └─ Selector: #standard-shipping
-...
-------------------------------------------------------------
-```
-
-### Demo
+- ✅ Dependency management
+- ✅ Parallel execution
+- ✅ Tích hợp Retry + Memory
+- ✅ Progress tracking
+- ✅ Save/load plans
 
 ```bash
-# Chạy demo interactive
-python demo_multi_step.py
+python demo_multi_step.py  # Demo interactive
 ```
-
-**Demo bao gồm:**
-1. Sử dụng templates
-2. Tạo custom plans
-3. Thực thi với dependencies
-4. Parallel execution
-
-### Lưu và Load Plans
-
-```python
-# Lưu plan
-planner.save_plan(plan, "test_plans/checkout.json")
-
-# Load plan
-plan = planner.load_plan("test_plans/checkout.json")
-```
-
-### Use Cases
-
-✅ **User Flows Phức Tạp**
-- Multi-page workflows
-- Conditional navigation
-- Data-dependent steps
-
-✅ **Integration Testing**
-- End-to-end scenarios
-- Cross-page interactions
-- State management
-
-✅ **Regression Testing**
-- Critical user paths
-- Business workflows
-- Payment flows
-
-### Lợi Ích
-
-- 🎯 **Organized**: Test plans rõ ràng, dễ maintain
-- ⚡ **Efficient**: Parallel execution tối ưu thời gian
-- 🔄 **Reusable**: Templates cho scenarios phổ biến
-- 📊 **Trackable**: Progress tracking chi tiết
-- 🧠 **Smart**: Tích hợp Retry + Memory
 
 ---
 
 ## 🤖 AI Mode vs Fast Mode
 
-| Feature | AI Mode (LLaMA 3) | Fast Mode (Rule-based) |
-|---------|-------------------|------------------------|
-| **LLM Required** | ✅ Yes (4.7GB model) | ❌ No |
-| **Speed** | Slower (~30s/page) | Fast (~5s/page) |
-| **Intelligence** | High (understands context) | Medium (rule-based) |
-| **Test Quality** | Better (contextual tests) | Good (coverage-based) |
+| Feature | AI Mode | Fast Mode |
+|---------|---------|-----------|
+| **LLM** | LLaMA 3 (4.7GB) | None |
+| **Speed** | ~30s/page | ~5s/page |
+| **Intelligence** | High | Medium |
 | **Use Case** | Complex apps | Quick testing |
 
-**Khuyến nghị:**
-- 🚀 **Fast Mode**: Development, CI/CD, quick checks
-- 🧠 **AI Mode**: Production testing, complex scenarios
+**Khuyến nghị:** Fast Mode cho development/CI/CD, AI Mode cho production testing
 
 ---
 
 ## 📊 Kiến Trúc
 
-### High-Level Architecture
+### High-Level Overview
 
 ```mermaid
 graph TB
     User[👤 User] --> Entry{Entry Point}
-    Entry -->|AI Mode| AI[🧠 AI Reasoning Layer]
+    Entry -->|AI Mode| AI[🧠 LLaMA 3]
     Entry -->|Fast Mode| Planner[🗺️ Planner]
     
-    AI -->|Analyze UI| LLaMA[LLaMA 3 Model]
-    LLaMA -->|Generate Strategy| Planner
+    AI --> Planner
+    Planner --> Executor[⚡ Executor]
     
-    Planner -->|Test Cases| Executor[⚡ Executor]
+    Executor <--> Memory[(🧠 Memory)]
+    Executor --> Retry[🔁 Retry Handler]
+    Retry --> Browser[🕷️ Browser]
+    Browser --> Web[🌐 Web App]
     
-    Executor -->|Check Memory| Memory[(🧠 State Memory)]
-    Memory -->|Best Selectors| Executor
-    
-    Executor -->|Execute Action| Retry[🔁 Retry Handler]
-    Retry -->|Success/Fail| Memory
-    
-    Retry -->|Browser Commands| Browser[🕷️ Browser Controller]
-    Browser -->|Selenium| Web[🌐 Web Application]
-    
-    Executor -->|Results| Analyzer[📊 Analyzer]
-    Analyzer -->|Generate| Reporter[📄 Reporter]
-    Reporter -->|Output| Reports[📁 Reports]
-    
-    Memory -.->|Learn| Memory
+    Executor --> Reporter[📄 Reporter]
     
     style AI fill:#e1f5ff
     style Memory fill:#fff4e1
     style Retry fill:#ffe1e1
-    style Browser fill:#e1ffe1
 ```
 
-### Detailed Component Flow
+### Core Components
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant M as Main
-    participant AI as AI Layer
-    participant P as Planner
-    participant E as Executor
-    participant R as Retry Handler
-    participant Mem as State Memory
-    participant B as Browser
-    participant W as Web App
-    participant A as Analyzer
-    participant Rep as Reporter
+- **🧠 AI Layer**: LLaMA 3 phân tích UI và sinh test strategy
+- **🗺️ Planner**: Tạo test cases từ strategy hoặc rules
+- **⚡ Executor**: Thực thi tests với retry + memory
+- **🔁 Retry Handler**: 5 smart strategies cho failures
+- **🧠 Memory**: Học và nhớ selectors, test history, page patterns
+- **🕷️ Browser**: Selenium WebDriver controller
+- **📄 Reporter**: JSON + console reports
 
-    U->>M: python main_fast.py URL
-    M->>B: Navigate to URL
-    B->>W: Load page
-    W-->>B: Page loaded
-    
-    alt AI Mode
-        M->>AI: Analyze page
-        AI->>B: Get DOM structure
-        B-->>AI: DOM + elements
-        AI->>AI: LLaMA 3 reasoning
-        AI->>P: Generate test strategy
-    else Fast Mode
-        M->>B: Get interactive elements
-        B-->>M: Elements list
-        M->>P: Generate rule-based tests
-    end
-    
-    P->>E: Test cases
-    
-    loop For each test case
-        E->>Mem: Check best selectors
-        Mem-->>E: Recommended selectors
-        
-        E->>R: Execute action
-        
-        loop Retry up to 3 times
-            R->>B: Try action
-            B->>W: Interact
-            
-            alt Success
-                W-->>B: Action completed
-                B-->>R: Success
-                R->>Mem: Remember success
-                R-->>E: Success
-            else Failure
-                W-->>B: Error
-                B-->>R: Failed
-                R->>R: Apply retry strategy
-                R->>Mem: Remember failure
-            end
-        end
-        
-        E->>E: Record result
-    end
-    
-    E->>Mem: Save session
-    E->>A: All results
-    A->>A: Analyze patterns
-    A->>Rep: Generate report
-    Rep->>U: Display results
-```
-
-### Component Details
-
-#### 🧠 AI Reasoning Layer (LLaMA 3)
-- **Input**: Page DOM, text content, interactive elements
-- **Process**: 
-  - Understand page purpose
-  - Identify user flows
-  - Generate test scenarios
-- **Output**: Test strategy with priorities
-- **Files**: `agent/planner.py`, `prompts/ui_analysis.txt`
-
-#### 🗺️ Planner
-- **Input**: Test strategy or page elements
-- **Process**:
-  - Generate test cases
-  - Assign priorities (high/medium/low)
-  - Create step-by-step actions
-- **Output**: Structured test cases
-- **Files**: `agent/planner.py`, `main_fast.py`
-
-#### ⚡ Executor (with Retry + Memory)
-- **Input**: Test cases
-- **Process**:
-  - Query memory for best selectors
-  - Execute each test step
-  - Handle failures with retry
-  - Learn from results
-- **Output**: Test results
-- **Files**: `agent/executor.py`
-
-#### 🔁 Retry Handler
-- **Input**: Action + selector
-- **Process**:
-  - Try action (max 3 attempts)
-  - Apply smart strategies on failure:
-    - Timeout → Increase wait
-    - Not found → Try alternatives
-    - Stale → Refresh
-    - Intercepted → Scroll
-    - Invalid → Use CSS
-- **Output**: Success/failure + stats
-- **Files**: `agent/retry_handler.py`
-
-#### 🧠 State Memory
-- **Storage**:
-  - `selector_memory.json`: Success/fail counts
-  - `test_history.json`: All test results
-  - `page_patterns.json`: Page structures
-- **Process**:
-  - Remember successful selectors
-  - Avoid failed selectors
-  - Track test statistics
-  - Learn page patterns
-- **Output**: Recommendations
-- **Files**: `agent/memory.py`
-
-#### 🕷️ Browser Controller
-- **Input**: Browser commands
-- **Process**:
-  - Selenium WebDriver management
-  - Element detection
-  - Action execution (click, type, select)
-  - Screenshot capture
-- **Output**: Action results
-- **Files**: `tools/browser.py`
-
-#### 📊 Analyzer + Reporter
-- **Input**: Test results
-- **Process**:
-  - Calculate pass/fail rates
-  - Identify patterns
-  - Generate recommendations
-  - Format reports
-- **Output**: JSON + Console reports
-- **Files**: `agent/analyzer.py`, `agent/reporter.py`
-
-### Data Flow
-
-```mermaid
-graph LR
-    subgraph Input
-        URL[URL]
-        Config[Config]
-    end
-    
-    subgraph Processing
-        DOM[DOM Analysis]
-        Tests[Test Generation]
-        Exec[Execution]
-    end
-    
-    subgraph Memory
-        Sel[Selectors]
-        Hist[History]
-        Pat[Patterns]
-    end
-    
-    subgraph Output
-        JSON[JSON Report]
-        Console[Console Output]
-        Stats[Statistics]
-    end
-    
-    URL --> DOM
-    Config --> Tests
-    DOM --> Tests
-    Tests --> Exec
-    
-    Exec <--> Sel
-    Exec --> Hist
-    DOM --> Pat
-    
-    Exec --> JSON
-    Exec --> Console
-    Hist --> Stats
-    
-    style Memory fill:#fff4e1
-    style Output fill:#e1ffe1
-```
+Chi tiết: Xem code trong `agent/` và `tools/`
 
 ---
 
-## 📁 Cấu Trúc Project
+## 📁 Project Structure
 
 ```
 AIAgentAutoTestWeb/
-├── agent/
-│   ├── planner.py          # LLaMA 3 test strategy
-│   ├── executor.py         # Test execution với retry + memory
-│   ├── analyzer.py         # Result analysis
-│   ├── reporter.py         # Report generation
-│   ├── retry_handler.py    # Smart retry logic
-│   └── memory.py           # State memory system
+├── agent/                  # Core agent logic
+│   ├── planner.py         # Test strategy generation
+│   ├── executor.py        # Test execution
+│   ├── retry_handler.py   # Smart retry logic
+│   ├── memory.py          # State memory system
+│   ├── multi_step_*.py    # Multi-step planning
+│   └── analyzer.py        # Result analysis
 ├── tools/
-│   └── browser.py          # Selenium controller
-├── prompts/
-│   ├── ui_analysis.txt     # UI analysis prompt
-│   └── test_generation.txt # Test generation prompt
-├── config/
-│   └── settings.py         # Configuration
-├── main.py                 # AI mode entry point
-├── main_fast.py            # Fast mode entry point
-├── test_chatbot.py         # Chatbot-specific tester
-├── view_memory.py          # View memory contents
-├── run_memory_demo.py      # Memory demo script
-└── requirements.txt        # Dependencies
+│   └── browser.py         # Selenium controller
+├── tests/                 # Test suite (69 tests)
+├── memory/                # Memory storage (gitignored)
+├── main.py               # AI mode entry
+├── main_fast.py          # Fast mode entry
+└── requirements.txt
 ```
 
 ---
 
-## 🎓 Hướng Dẫn Chi Tiết
+## 📖 Documentation
 
-- 📖 **HUONG_DAN_MEMORY.md** - Hướng dẫn State Memory (Tiếng Việt)
-- 🚀 **MEMORY_QUICK_START.md** - Quick start guide
-- 🔧 **HOW_STATE_MEMORY_WORKS.md** - Chi tiết kỹ thuật
-- 📥 **DOWNLOAD_MODEL.md** - Hướng dẫn download LLaMA 3 model
+- **MEMORY_QUICK_START.md** - Memory system quick start
+- **MULTI_STEP_PLANNING_GUIDE.md** - Multi-step planning guide
+- **DOWNLOAD_MODEL.md** - LLaMA 3 model setup
+- **CHANGELOG.md** - Version history
 
 ---
 
-## 🧪 Ví Dụ Sử Dụng
-
-### Test Chatbot Lịch Sử Việt Nam
+## 🧪 Demo & Examples
 
 ```bash
+# Test chatbot
 python test_chatbot.py
-```
 
-**Test cases tự động:**
-- ✅ Test kiến thức về Triều đại Trần
-- ✅ Test kiến thức về Hai Bà Trưng
-- ✅ Test kiến thức về Văn Miếu
-- ✅ Test kiến thức về Đại Việt
-- ✅ Test xử lý câu hỏi không liên quan
+# Memory demo
+python run_memory_demo.py
 
-**Kết quả:**
-```
-📊 CHATBOT TEST RESULTS
-  Total questions: 17
-  Correct answers: 5 (29.4%)
-  
-💡 Knowledge gaps detected:
-  - Hai Bà Trưng: Incomplete information
-  - Văn Miếu: Missing historical details
+# Multi-step demo
+python demo_multi_step.py
+
+# View memory
+python view_memory.py
 ```
 
 ---
 
-## 🛠 Requirements
+## � Requirements
 
+```bash
+pip install -r requirements.txt
 ```
-Python >= 3.8
-selenium >= 4.0.0
-webdriver-manager >= 4.0.0
-colorama >= 0.4.6
-llama-cpp-python >= 0.2.0  # For AI mode
-```
+
+**Dependencies:** Python 3.8+, Selenium 4.0+, colorama, llama-cpp-python (AI mode)
 
 ---
 
-## 🌟 Tại Sao Nên Dùng?
+## 🌟 So Sánh
 
-### So Sánh Với Các Tool Khác
-
-| Feature | Selenium/Playwright | AI Agent Auto Test |
-|---------|---------------------|-------------------|
-| **Tự sinh test** | ❌ Manual | ✅ Automatic |
-| **Học từ test cũ** | ❌ No | ✅ State Memory |
-| **Smart retry** | ❌ Basic | ✅ Intelligent |
+| Feature | Selenium/Playwright | AI Agent |
+|---------|---------------------|----------|
+| **Tự sinh test** | ❌ Manual | ✅ Auto |
+| **Học từ test cũ** | ❌ No | ✅ Memory |
+| **Smart retry** | ❌ Basic | ✅ 5 strategies |
 | **Hiểu context** | ❌ No | ✅ LLaMA 3 |
-| **Self-healing** | ❌ No | 🔜 Coming |
 
-### Use Cases
-
-✅ **Phù hợp cho:**
-- Landing pages
-- Web CRUD applications
-- E-commerce sites (80% coverage)
-- Form-based applications
-- Chatbots và conversational UI
-
-⚠️ **Chưa hỗ trợ tốt:**
-- Web có CAPTCHA
-- Web games
-- Highly customized UI (cần hướng dẫn)
+**Phù hợp:** Landing pages, CRUD apps, E-commerce, Forms, Chatbots  
+**Chưa hỗ trợ:** CAPTCHA, Web games
 
 ---
 
-## 🎯 Roadmap Chi Tiết
+## 🎯 Development Roadmap
 
-### Phase 1: Foundation ✅ (Completed)
-- [x] Basic Selenium automation
-- [x] LLaMA 3 integration
-- [x] Test case generation
-- [x] Retry loop with smart strategies
-- [x] State memory system
-- [x] Multi-step planning with dependencies
+**Phase 1: Foundation** ✅ Completed
+- Selenium automation, LLaMA 3, Retry loop, State memory, Multi-step planning
 
-### Phase 2: Intelligence 🚧 (Next)
-- [ ] **Coverage Tracking**: Theo dõi code coverage và test coverage tự động
-- [ ] **Self-healing Selectors**: Tự động sửa selectors khi DOM thay đổi
+**Phase 2: Intelligence** 🚧 Next
+- Coverage tracking, Self-healing selectors
 
-### Phase 3: Visual & Performance 🔜 (Planned)
-- [ ] **Screenshot Diff**: So sánh visual regression giữa các version
-- [ ] **Network Monitoring**: Theo dõi API calls, response time, errors
-- [ ] **Performance Testing**: Đo load time, memory usage, CPU usage
+**Phase 3: Visual & Performance** 🔜 Planned
+- Screenshot diff, Network monitoring, Performance testing
 
-### Phase 4: Enterprise 🔮 (Future)
-- [ ] **CI/CD Integration**: GitHub Actions, Jenkins, GitLab CI
-- [ ] **Parallel Execution**: Chạy nhiều test đồng thời
-- [ ] **Cloud Deployment**: Deploy agent lên cloud
-- [ ] **Team Collaboration**: Chia sẻ memory và test results
+**Phase 4: Enterprise** 🔮 Future
+- CI/CD integration, Parallel execution, Cloud deployment
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Đặc biệt các tính năng trong roadmap:
+Contributions welcome! Focus areas: Coverage tracking, Self-healing selectors, Screenshot diff, Network monitoring
 
-- 🗺️ Multi-step planning
-- 📊 Coverage tracking
-- 🛠 Self-healing selectors
-- 📸 Screenshot diff
-- 🌐 Network monitoring
-
-**How to contribute:**
-1. Fork the repo
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork repo
+2. Create feature branch
+3. Commit changes
+4. Push and open PR
 
 ---
 
 ## 📝 License
 
-MIT License - feel free to use for your projects!
-
----
+MIT License
 
 ## 📞 Contact
 
-- **GitHub**: [h1eudayne](https://github.com/h1eudayne)
-- **Project**: [AIAgentAutoTestWeb](https://github.com/h1eudayne/AIAgentAutoTestWeb)
+**GitHub**: [h1eudayne/AIAgentAutoTestWeb](https://github.com/h1eudayne/AIAgentAutoTestWeb)
 
 ---
 
-**⭐ Nếu project hữu ích, đừng quên star repo nhé!**
-
-**🚀 Càng test nhiều, agent càng thông minh!**
+⭐ Star repo nếu hữu ích! 🚀 Càng test nhiều, agent càng thông minh!
