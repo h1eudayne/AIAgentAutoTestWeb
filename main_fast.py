@@ -20,13 +20,16 @@ from config.settings import BROWSER_HEADLESS, BROWSER_TIMEOUT, REPORTS_DIR
 init(autoreset=True)
 
 class FastWebTestAgent:
-    def __init__(self, headless: bool = False):
+    def __init__(self, headless: bool = False, enable_retry: bool = True):
         print(f"{Fore.CYAN}🤖 Initializing Fast Web Testing Agent (No LLM)...{Style.RESET_ALL}\n")
         
         self.browser = BrowserController(headless=headless, timeout=BROWSER_TIMEOUT)
-        self.executor = TestExecutor(self.browser)
+        self.executor = TestExecutor(self.browser, enable_retry=enable_retry)
         self.analyzer = ResultAnalyzer()
         self.reporter = TestReporter(REPORTS_DIR)
+        
+        if enable_retry:
+            print(f"{Fore.GREEN}✓ Retry logic enabled (max 3 attempts per action){Style.RESET_ALL}")
         
         print(f"{Fore.GREEN}✓ Agent initialized successfully{Style.RESET_ALL}\n")
     
@@ -198,6 +201,20 @@ class FastWebTestAgent:
                 }
             }
             
+            # Add retry stats if enabled
+            if self.executor.enable_retry:
+                retry_stats = self.executor.retry_handler.get_retry_stats()
+                analysis_result["retry_stats"] = retry_stats
+                
+                print(f"\n{Fore.CYAN}🔄 RETRY STATISTICS{Style.RESET_ALL}")
+                print(f"  Total actions: {retry_stats['total']}")
+                print(f"  Success rate: {retry_stats['success_rate']}")
+                print(f"  Avg attempts: {retry_stats['avg_attempts']}")
+                
+                failed_actions = self.executor.retry_handler.get_failed_actions()
+                if failed_actions:
+                    print(f"  {Fore.RED}Failed after retries: {len(failed_actions)}{Style.RESET_ALL}")
+            
             report_file = self.reporter.generate_report(url, results, analysis_result)
             print(f"{Fore.GREEN}✓ Report saved to: {report_file}{Style.RESET_ALL}\n")
             
@@ -229,6 +246,11 @@ def main():
         action="store_true",
         help="Chạy browser ở chế độ headless"
     )
+    parser.add_argument(
+        "--no-retry",
+        action="store_true",
+        help="Disable retry logic"
+    )
     
     args = parser.parse_args()
     
@@ -237,7 +259,7 @@ def main():
         args.url = "https://" + args.url
     
     # Run agent
-    agent = FastWebTestAgent(headless=args.headless)
+    agent = FastWebTestAgent(headless=args.headless, enable_retry=not args.no_retry)
     agent.test_website(args.url)
 
 if __name__ == "__main__":

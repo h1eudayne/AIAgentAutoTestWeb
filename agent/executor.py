@@ -1,12 +1,21 @@
-# Test Executor
+# Test Executor with Retry Logic
 from typing import Dict, List
 from tools.browser import BrowserController
+from agent.retry_handler import RetryHandler, RetryableAction
 import time
 
 class TestExecutor:
-    def __init__(self, browser: BrowserController):
+    def __init__(self, browser: BrowserController, enable_retry: bool = True):
         self.browser = browser
         self.results = []
+        self.enable_retry = enable_retry
+        
+        if enable_retry:
+            self.retry_handler = RetryHandler(max_retries=3)
+            self.retryable_action = RetryableAction(browser, self.retry_handler)
+        else:
+            self.retry_handler = None
+            self.retryable_action = None
     
     def execute_test_case(self, test_case: Dict) -> Dict:
         """Thực thi một test case"""
@@ -50,7 +59,7 @@ class TestExecutor:
         return result
     
     def _execute_step(self, step: Dict) -> Dict:
-        """Thực thi một bước test"""
+        """Thực thi một bước test với retry logic"""
         action = step.get("action")
         selector = step.get("selector")
         value = step.get("value")
@@ -60,8 +69,24 @@ class TestExecutor:
                 time.sleep(int(value) if value else 2)
                 return {"success": True, "action": "wait"}
             
-            elif action in ["click", "type", "select"]:
-                return self.browser.execute_action(action, selector, value)
+            elif action == "click":
+                if self.enable_retry and self.retryable_action:
+                    # Use retry logic
+                    return self.retryable_action.click_with_retry(selector)
+                else:
+                    # Direct execution
+                    return self.browser.execute_action("click", selector)
+            
+            elif action == "type":
+                if self.enable_retry and self.retryable_action:
+                    # Use retry logic
+                    return self.retryable_action.type_with_retry(selector, value)
+                else:
+                    # Direct execution
+                    return self.browser.execute_action("type", selector, value)
+            
+            elif action == "select":
+                return self.browser.execute_action("select", selector, value)
             
             else:
                 return {"success": False, "error": f"Unknown action: {action}"}
@@ -100,14 +125,20 @@ class TestExecutor:
         return self.results
     
     def get_summary(self) -> Dict:
-        """Tổng hợp kết quả"""
+        """Tổng hợp kết quả bao gồm retry stats"""
         total = len(self.results)
         passed = sum(1 for r in self.results if r["status"] == "passed")
         failed = total - passed
         
-        return {
+        summary = {
             "total": total,
             "passed": passed,
             "failed": failed,
             "pass_rate": f"{(passed/total*100):.1f}%" if total > 0 else "0%"
         }
+        
+        # Add retry stats if enabled
+        if self.enable_retry and self.retry_handler:
+            summary["retry_stats"] = self.retry_handler.get_retry_stats()
+        
+        return summary
