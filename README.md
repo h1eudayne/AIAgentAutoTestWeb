@@ -32,6 +32,7 @@
 |-----------|-------|--------|
 | 🔁 **Retry Loop** | Tự động retry khi fail với smart strategies | ✅ Done |
 | 🧠 **State Memory** | Học từ test trước, nhớ selectors tốt/xấu | ✅ Done |
+| 🗺️ **Multi-step Planning** | Lập kế hoạch test phức tạp với dependencies | ✅ Done |
 | 🤖 **AI Reasoning** | LLaMA 3 phân tích UI và sinh test cases | ✅ Done |
 | ⚡ **Fast Mode** | Rule-based testing không cần LLM | ✅ Done |
 | 📊 **Smart Reports** | JSON + colored console reports | ✅ Done |
@@ -40,7 +41,6 @@
 
 | Tính năng | Mô tả | Status |
 |-----------|-------|--------|
-| 🗺️ **Multi-step Planning** | Lập kế hoạch test phức tạp nhiều bước | 🔜 Planned |
 | 📊 **Coverage Tracking** | Theo dõi test coverage tự động | 🔜 Planned |
 | 🛠 **Self-healing Selector** | Tự sửa selector khi DOM thay đổi | 🔜 Planned |
 | 📸 **Screenshot Diff** | So sánh visual regression | 🔜 Planned |
@@ -248,6 +248,224 @@ python main_fast.py https://example.com --no-memory
 
 ---
 
+## 🗺️ Multi-step Planning - Test Plans Phức Tạp
+
+### Vấn Đề: Test Đơn Giản Không Đủ
+
+Test automation truyền thống:
+- ❌ Mỗi test case độc lập
+- ❌ Không quản lý dependencies
+- ❌ Khó test user flows phức tạp
+- ❌ Không tối ưu thứ tự thực thi
+
+### Giải Pháp: Multi-step Planning
+
+Tạo test plans với dependencies và thực thi thông minh:
+
+**Ví dụ: E-commerce Checkout Flow**
+
+```python
+from agent.multi_step_planner import MultiStepPlanner
+
+planner = MultiStepPlanner()
+
+# Sử dụng template có sẵn
+plan = planner.create_plan_from_template("e_commerce_checkout", "plan_001")
+
+# Hoặc tạo custom plan
+steps = [
+    {
+        "id": "step1",
+        "name": "Add item to cart",
+        "type": "click",
+        "selector": ".add-to-cart",
+        "depends_on": []
+    },
+    {
+        "id": "step2",
+        "name": "Go to cart",
+        "type": "click",
+        "selector": "#cart-icon",
+        "depends_on": ["step1"]  # Phụ thuộc vào step1
+    },
+    {
+        "id": "step3",
+        "name": "Proceed to checkout",
+        "type": "click",
+        "selector": "#checkout-btn",
+        "depends_on": ["step2"]  # Phụ thuộc vào step2
+    }
+]
+
+plan = planner.create_custom_plan("checkout_001", "Checkout Flow", 
+                                  "Complete checkout process", steps)
+```
+
+### Templates Có Sẵn
+
+```python
+planner.list_templates()
+# ['login_flow', 'form_submission', 'search_flow', 'e_commerce_checkout']
+```
+
+**1. Login Flow**
+```
+step1: Navigate to login page
+  └─> step2: Enter username
+      └─> step3: Enter password
+          └─> step4: Click login
+              └─> step5: Verify success
+```
+
+**2. Form Submission**
+```
+step1: Fill first name ─┐
+step2: Fill last name  ─┤
+step3: Fill email      ─┼─> step5: Submit form
+step4: Select country  ─┘       └─> step6: Verify
+```
+
+**3. E-commerce Checkout**
+```
+step1: Add to cart
+  └─> step2: Go to cart
+      └─> step3: Checkout
+          └─> step4: Shipping
+              └─> step5: Payment
+                  └─> step6: Confirm
+```
+
+### Thực Thi Plan
+
+```python
+from agent.multi_step_executor import MultiStepExecutor
+from tools.browser import BrowserController
+
+browser = BrowserController()
+executor = MultiStepExecutor(browser, enable_retry=True, enable_memory=True)
+
+# Execute plan
+result = executor.execute_plan(plan, url="https://example.com")
+
+# Kết quả
+print(f"Success rate: {result['success_rate']}")
+print(f"Completed: {result['completed']}/{result['total_steps']}")
+print(f"Duration: {result['duration']:.2f}s")
+```
+
+### Tính Năng
+
+✅ **Dependency Management**
+- Steps tự động chờ dependencies hoàn thành
+- Phát hiện circular dependencies
+- Skip steps khi dependency fail
+
+✅ **Parallel Execution**
+- Steps không phụ thuộc chạy song song
+- Tối ưu thời gian thực thi
+
+✅ **Smart Retry**
+- Tích hợp Retry Handler
+- Retry từng step riêng biệt
+
+✅ **Memory Integration**
+- Học từ plans trước
+- Nhớ best selectors cho từng step
+
+✅ **Progress Tracking**
+- Real-time progress updates
+- Detailed step-by-step logs
+
+### Visualize Plan
+
+```python
+print(planner.visualize_plan(plan))
+```
+
+**Output:**
+```
+============================================================
+📋 Test Plan: E-commerce Checkout Flow
+============================================================
+Description: Complete checkout process from cart to payment
+Priority: high
+Progress: 3/9 (33.3%)
+
+Steps:
+------------------------------------------------------------
+1. ✅ Add item to cart (click)
+   └─ Selector: .add-to-cart
+
+2. ✅ Go to cart (click)
+   └─ Depends on: step1
+   └─ Selector: #cart-icon
+
+3. ✅ Proceed to checkout (click)
+   └─ Depends on: step2
+   └─ Selector: #checkout-btn
+
+4. ⏳ Fill shipping address (type)
+   └─ Depends on: step3
+   └─ Selector: #address
+   └─ Value: 123 Main St
+
+5. ⏳ Select shipping method (click)
+   └─ Depends on: step4
+   └─ Selector: #standard-shipping
+...
+------------------------------------------------------------
+```
+
+### Demo
+
+```bash
+# Chạy demo interactive
+python demo_multi_step.py
+```
+
+**Demo bao gồm:**
+1. Sử dụng templates
+2. Tạo custom plans
+3. Thực thi với dependencies
+4. Parallel execution
+
+### Lưu và Load Plans
+
+```python
+# Lưu plan
+planner.save_plan(plan, "test_plans/checkout.json")
+
+# Load plan
+plan = planner.load_plan("test_plans/checkout.json")
+```
+
+### Use Cases
+
+✅ **User Flows Phức Tạp**
+- Multi-page workflows
+- Conditional navigation
+- Data-dependent steps
+
+✅ **Integration Testing**
+- End-to-end scenarios
+- Cross-page interactions
+- State management
+
+✅ **Regression Testing**
+- Critical user paths
+- Business workflows
+- Payment flows
+
+### Lợi Ích
+
+- 🎯 **Organized**: Test plans rõ ràng, dễ maintain
+- ⚡ **Efficient**: Parallel execution tối ưu thời gian
+- 🔄 **Reusable**: Templates cho scenarios phổ biến
+- 📊 **Trackable**: Progress tracking chi tiết
+- 🧠 **Smart**: Tích hợp Retry + Memory
+
+---
+
 ## 🤖 AI Mode vs Fast Mode
 
 | Feature | AI Mode (LLaMA 3) | Fast Mode (Rule-based) |
@@ -266,46 +484,226 @@ python main_fast.py https://example.com --no-memory
 
 ## 📊 Kiến Trúc
 
+### High-Level Architecture
+
+```mermaid
+graph TB
+    User[👤 User] --> Entry{Entry Point}
+    Entry -->|AI Mode| AI[🧠 AI Reasoning Layer]
+    Entry -->|Fast Mode| Planner[🗺️ Planner]
+    
+    AI -->|Analyze UI| LLaMA[LLaMA 3 Model]
+    LLaMA -->|Generate Strategy| Planner
+    
+    Planner -->|Test Cases| Executor[⚡ Executor]
+    
+    Executor -->|Check Memory| Memory[(🧠 State Memory)]
+    Memory -->|Best Selectors| Executor
+    
+    Executor -->|Execute Action| Retry[🔁 Retry Handler]
+    Retry -->|Success/Fail| Memory
+    
+    Retry -->|Browser Commands| Browser[🕷️ Browser Controller]
+    Browser -->|Selenium| Web[🌐 Web Application]
+    
+    Executor -->|Results| Analyzer[📊 Analyzer]
+    Analyzer -->|Generate| Reporter[📄 Reporter]
+    Reporter -->|Output| Reports[📁 Reports]
+    
+    Memory -.->|Learn| Memory
+    
+    style AI fill:#e1f5ff
+    style Memory fill:#fff4e1
+    style Retry fill:#ffe1e1
+    style Browser fill:#e1ffe1
 ```
-┌─────────────┐
-│   User      │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│  🧠 AI Reasoning Layer (LLaMA 3)   │
-│  - Analyze UI                       │
-│  - Generate test strategy           │
-└──────┬──────────────────────────────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│  🗺️ Planner                         │
-│  - Test case generation             │
-│  - Priority assignment              │
-└──────┬──────────────────────────────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│  ⚡ Executor (with Retry + Memory)  │
-│  - Execute tests                    │
-│  - Smart retry on failure           │
-│  - Learn from results               │
-└──────┬──────────────────────────────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│  🕷️ Browser Controller (Selenium)   │
-│  - DOM interaction                  │
-│  - Element detection                │
-└──────┬──────────────────────────────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│  📊 Analyzer + Reporter             │
-│  - Result analysis                  │
-│  - JSON + Console reports           │
-└─────────────────────────────────────┘
+
+### Detailed Component Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant M as Main
+    participant AI as AI Layer
+    participant P as Planner
+    participant E as Executor
+    participant R as Retry Handler
+    participant Mem as State Memory
+    participant B as Browser
+    participant W as Web App
+    participant A as Analyzer
+    participant Rep as Reporter
+
+    U->>M: python main_fast.py URL
+    M->>B: Navigate to URL
+    B->>W: Load page
+    W-->>B: Page loaded
+    
+    alt AI Mode
+        M->>AI: Analyze page
+        AI->>B: Get DOM structure
+        B-->>AI: DOM + elements
+        AI->>AI: LLaMA 3 reasoning
+        AI->>P: Generate test strategy
+    else Fast Mode
+        M->>B: Get interactive elements
+        B-->>M: Elements list
+        M->>P: Generate rule-based tests
+    end
+    
+    P->>E: Test cases
+    
+    loop For each test case
+        E->>Mem: Check best selectors
+        Mem-->>E: Recommended selectors
+        
+        E->>R: Execute action
+        
+        loop Retry up to 3 times
+            R->>B: Try action
+            B->>W: Interact
+            
+            alt Success
+                W-->>B: Action completed
+                B-->>R: Success
+                R->>Mem: Remember success
+                R-->>E: Success
+            else Failure
+                W-->>B: Error
+                B-->>R: Failed
+                R->>R: Apply retry strategy
+                R->>Mem: Remember failure
+            end
+        end
+        
+        E->>E: Record result
+    end
+    
+    E->>Mem: Save session
+    E->>A: All results
+    A->>A: Analyze patterns
+    A->>Rep: Generate report
+    Rep->>U: Display results
+```
+
+### Component Details
+
+#### 🧠 AI Reasoning Layer (LLaMA 3)
+- **Input**: Page DOM, text content, interactive elements
+- **Process**: 
+  - Understand page purpose
+  - Identify user flows
+  - Generate test scenarios
+- **Output**: Test strategy with priorities
+- **Files**: `agent/planner.py`, `prompts/ui_analysis.txt`
+
+#### 🗺️ Planner
+- **Input**: Test strategy or page elements
+- **Process**:
+  - Generate test cases
+  - Assign priorities (high/medium/low)
+  - Create step-by-step actions
+- **Output**: Structured test cases
+- **Files**: `agent/planner.py`, `main_fast.py`
+
+#### ⚡ Executor (with Retry + Memory)
+- **Input**: Test cases
+- **Process**:
+  - Query memory for best selectors
+  - Execute each test step
+  - Handle failures with retry
+  - Learn from results
+- **Output**: Test results
+- **Files**: `agent/executor.py`
+
+#### 🔁 Retry Handler
+- **Input**: Action + selector
+- **Process**:
+  - Try action (max 3 attempts)
+  - Apply smart strategies on failure:
+    - Timeout → Increase wait
+    - Not found → Try alternatives
+    - Stale → Refresh
+    - Intercepted → Scroll
+    - Invalid → Use CSS
+- **Output**: Success/failure + stats
+- **Files**: `agent/retry_handler.py`
+
+#### 🧠 State Memory
+- **Storage**:
+  - `selector_memory.json`: Success/fail counts
+  - `test_history.json`: All test results
+  - `page_patterns.json`: Page structures
+- **Process**:
+  - Remember successful selectors
+  - Avoid failed selectors
+  - Track test statistics
+  - Learn page patterns
+- **Output**: Recommendations
+- **Files**: `agent/memory.py`
+
+#### 🕷️ Browser Controller
+- **Input**: Browser commands
+- **Process**:
+  - Selenium WebDriver management
+  - Element detection
+  - Action execution (click, type, select)
+  - Screenshot capture
+- **Output**: Action results
+- **Files**: `tools/browser.py`
+
+#### 📊 Analyzer + Reporter
+- **Input**: Test results
+- **Process**:
+  - Calculate pass/fail rates
+  - Identify patterns
+  - Generate recommendations
+  - Format reports
+- **Output**: JSON + Console reports
+- **Files**: `agent/analyzer.py`, `agent/reporter.py`
+
+### Data Flow
+
+```mermaid
+graph LR
+    subgraph Input
+        URL[URL]
+        Config[Config]
+    end
+    
+    subgraph Processing
+        DOM[DOM Analysis]
+        Tests[Test Generation]
+        Exec[Execution]
+    end
+    
+    subgraph Memory
+        Sel[Selectors]
+        Hist[History]
+        Pat[Patterns]
+    end
+    
+    subgraph Output
+        JSON[JSON Report]
+        Console[Console Output]
+        Stats[Statistics]
+    end
+    
+    URL --> DOM
+    Config --> Tests
+    DOM --> Tests
+    Tests --> Exec
+    
+    Exec <--> Sel
+    Exec --> Hist
+    DOM --> Pat
+    
+    Exec --> JSON
+    Exec --> Console
+    Hist --> Stats
+    
+    style Memory fill:#fff4e1
+    style Output fill:#e1ffe1
 ```
 
 ---
@@ -423,9 +821,9 @@ llama-cpp-python >= 0.2.0  # For AI mode
 - [x] Test case generation
 - [x] Retry loop with smart strategies
 - [x] State memory system
+- [x] Multi-step planning with dependencies
 
 ### Phase 2: Intelligence 🚧 (Next)
-- [ ] **Multi-step Planning**: Lập kế hoạch test phức tạp với nhiều bước phụ thuộc
 - [ ] **Coverage Tracking**: Theo dõi code coverage và test coverage tự động
 - [ ] **Self-healing Selectors**: Tự động sửa selectors khi DOM thay đổi
 
