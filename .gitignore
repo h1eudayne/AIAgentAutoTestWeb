@@ -41,6 +41,9 @@ reports/
 screenshots/
 test_screenshot.png
 
+# Memory - State memory files
+memory/
+
 # Documentation - Ignore all markdown files except README.md
 *.md
 !README.md

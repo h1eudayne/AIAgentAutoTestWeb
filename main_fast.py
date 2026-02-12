@@ -20,16 +20,18 @@ from config.settings import BROWSER_HEADLESS, BROWSER_TIMEOUT, REPORTS_DIR
 init(autoreset=True)
 
 class FastWebTestAgent:
-    def __init__(self, headless: bool = False, enable_retry: bool = True):
+    def __init__(self, headless: bool = False, enable_retry: bool = True, enable_memory: bool = True):
         print(f"{Fore.CYAN}🤖 Initializing Fast Web Testing Agent (No LLM)...{Style.RESET_ALL}\n")
         
         self.browser = BrowserController(headless=headless, timeout=BROWSER_TIMEOUT)
-        self.executor = TestExecutor(self.browser, enable_retry=enable_retry)
+        self.executor = TestExecutor(self.browser, enable_retry=enable_retry, enable_memory=enable_memory)
         self.analyzer = ResultAnalyzer()
         self.reporter = TestReporter(REPORTS_DIR)
         
         if enable_retry:
             print(f"{Fore.GREEN}✓ Retry logic enabled (max 3 attempts per action){Style.RESET_ALL}")
+        if enable_memory:
+            print(f"{Fore.GREEN}✓ State memory enabled (learns from past tests){Style.RESET_ALL}")
         
         print(f"{Fore.GREEN}✓ Agent initialized successfully{Style.RESET_ALL}\n")
     
@@ -167,6 +169,16 @@ class FastWebTestAgent:
             page_info = self.browser.get_page_info()
             elements = self.browser.get_interactive_elements()
             
+            # Learn page pattern in memory
+            if self.executor.enable_memory and self.executor.memory:
+                self.executor.memory.learn_page_pattern(url, {"elements": elements})
+                
+                # Get recommendations from memory
+                recommendations = self.executor.memory.get_recommendations(url)
+                if recommendations.get("test_stats", {}).get("total", 0) > 0:
+                    stats = recommendations["test_stats"]
+                    print(f"  {Fore.CYAN}💾 Memory: Tested this page {stats['total']} times before (Pass rate: {stats['pass_rate']}){Style.RESET_ALL}")
+            
             print(f"{Fore.GREEN}✓ Found {len(elements)} interactive elements{Style.RESET_ALL}")
             
             # Show element summary
@@ -185,7 +197,7 @@ class FastWebTestAgent:
             
             # Step 4: Execute tests
             print(f"{Fore.YELLOW}[4/4] ⚡ Executing tests...{Style.RESET_ALL}")
-            results = self.executor.execute_all_tests(test_cases)
+            results = self.executor.execute_all_tests(test_cases, url)
             print(f"{Fore.GREEN}✓ Tests completed{Style.RESET_ALL}\n")
             
             # Analyze and report
@@ -214,6 +226,16 @@ class FastWebTestAgent:
                 failed_actions = self.executor.retry_handler.get_failed_actions()
                 if failed_actions:
                     print(f"  {Fore.RED}Failed after retries: {len(failed_actions)}{Style.RESET_ALL}")
+            
+            # Add memory stats if enabled
+            if self.executor.enable_memory and self.executor.memory:
+                memory_stats = self.executor.memory.get_memory_stats()
+                analysis_result["memory_stats"] = memory_stats
+                
+                print(f"\n{Fore.CYAN}💾 MEMORY STATISTICS{Style.RESET_ALL}")
+                print(f"  Pages remembered: {memory_stats['total_pages_remembered']}")
+                print(f"  Tests in history: {memory_stats['total_tests_in_history']}")
+                print(f"  Memory size: {memory_stats['memory_size_kb']:.2f} KB")
             
             report_file = self.reporter.generate_report(url, results, analysis_result)
             print(f"{Fore.GREEN}✓ Report saved to: {report_file}{Style.RESET_ALL}\n")
@@ -251,6 +273,11 @@ def main():
         action="store_true",
         help="Disable retry logic"
     )
+    parser.add_argument(
+        "--no-memory",
+        action="store_true",
+        help="Disable state memory"
+    )
     
     args = parser.parse_args()
     
@@ -259,7 +286,11 @@ def main():
         args.url = "https://" + args.url
     
     # Run agent
-    agent = FastWebTestAgent(headless=args.headless, enable_retry=not args.no_retry)
+    agent = FastWebTestAgent(
+        headless=args.headless, 
+        enable_retry=not args.no_retry,
+        enable_memory=not args.no_memory
+    )
     agent.test_website(args.url)
 
 if __name__ == "__main__":
