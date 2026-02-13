@@ -301,46 +301,34 @@ Return JSON with correct, relevant, on_topic, score, feedback."""
             return {"correct": False, "relevant": False, "score": 0.0}
 
 
-def setup_ai_provider() -> tuple[str, str]:
-    """Interactive setup for AI provider"""
-    click.echo("\n" + "=" * 80)
-    click.echo(click.style("🤖 AI PROVIDER SETUP", fg="cyan", bold=True))
-    click.echo("=" * 80)
-
-    # Choose provider
-    provider = click.prompt(
-        "\nChọn AI provider",
-        type=click.Choice(["cerebras", "gemini"], case_sensitive=False),
-        default="cerebras",
-    )
-
-    # Get API key
+def get_api_key(provider: str, lang: str = "en") -> str:
+    """Get API key for provider"""
     env_var = "CEREBRAS_API_KEY" if provider == "cerebras" else "GEMINI_API_KEY"
     existing_key = os.environ.get(env_var)
 
     if existing_key:
-        click.echo(f"\n✓ Đã có API key: {existing_key[:20]}...")
-        if not click.confirm("Dùng key này?", default=True):
-            existing_key = None
+        click.echo(f"\n{t('existing_key', lang).format(existing_key[:20])}")
+        if click.confirm(t("use_this_key", lang), default=True):
+            return existing_key
 
-    if not existing_key:
-        click.echo(f"\n📝 Nhập {provider.upper()} API key:")
-        if provider == "cerebras":
-            click.echo("   Get key at: https://cloud.cerebras.ai/")
-        else:
-            click.echo("   Get key at: https://aistudio.google.com/app/apikey")
-
-        api_key = click.prompt("API Key", hide_input=True)
-
-        # Save to .env
-        env_file = Path(".env")
-        if click.confirm("\nLưu vào .env file?", default=True):
-            set_key(env_file, env_var, api_key)
-            click.echo(click.style(f"✓ Đã lưu vào {env_file}", fg="green"))
+    # Prompt for new key
+    click.echo(f"\n{t('enter_api_key', lang).format(provider.upper())}")
+    if provider == "cerebras":
+        click.echo(t("get_key_at", lang).format("https://cloud.cerebras.ai/"))
     else:
-        api_key = existing_key
+        click.echo(
+            t("get_key_at", lang).format("https://aistudio.google.com/app/apikey")
+        )
 
-    return provider, api_key
+    api_key = click.prompt(t("api_key_prompt", lang), hide_input=True)
+
+    # Save to .env
+    env_file = Path(".env")
+    if click.confirm(f"\n{t('save_to_env', lang)}", default=True):
+        set_key(env_file, env_var, api_key)
+        click.echo(click.style(t("saved", lang).format(env_file), fg="green"))
+
+    return api_key
 
 
 def create_provider(provider_name: str, api_key: str) -> AIProvider:
@@ -355,12 +343,23 @@ def create_provider(provider_name: str, api_key: str) -> AIProvider:
 
 @click.command()
 @click.option("--url", "-u", help="URL to test")
-@click.option("--headless/--no-headless", default=True, help="Headless mode")
 @click.option(
-    "--provider", type=click.Choice(["cerebras", "gemini"]), help="AI provider"
+    "--lang",
+    "-l",
+    type=click.Choice(["vi", "en"], case_sensitive=False),
+    prompt="🌍 Choose test language / Chọn ngôn ngữ",
+    help="Test language (vi=Vietnamese, en=English)",
 )
-@click.option("--api-key", help="API key")
-def main(url, headless, provider, api_key):
+@click.option(
+    "--provider",
+    "-p",
+    type=click.Choice(["cerebras", "gemini"], case_sensitive=False),
+    prompt="🤖 Choose AI provider / Chọn AI provider",
+    help="AI provider",
+)
+@click.option("--headless/--no-headless", default=True, help="Headless mode")
+@click.option("--api-key", help="API key (optional, will prompt if needed)")
+def main(url, lang, provider, headless, api_key):
     """
     🚀 AI Web Testing CLI - Test any website with AI
 
@@ -373,20 +372,23 @@ def main(url, headless, provider, api_key):
     click.echo(click.style("🚀 AI WEB TESTING CLI", fg="green", bold=True))
     click.echo("=" * 80)
 
+    lang_name = "Tiếng Việt" if lang == "vi" else "English"
+    click.echo(f"\n✓ {t('language_label', lang).format(lang_name)}")
+
     # Get URL
     if not url:
-        url = click.prompt("\n🌐 Nhập URL cần test")
+        url = click.prompt(f"\n{t('enter_url', lang)}")
 
     if not url.startswith("http"):
         url = "https://" + url
 
-    click.echo(f"\n✓ URL: {url}")
+    click.echo(f"\n{t('url_label', lang).format(url)}")
 
-    # Setup AI provider
-    if not provider or not api_key:
-        provider, api_key = setup_ai_provider()
+    # Get API key if not provided
+    if not api_key:
+        api_key = get_api_key(provider, lang)
 
-    click.echo(f"\n✓ AI Provider: {provider.upper()}")
+    click.echo(f"\n{t('provider_label', lang).format(provider.upper())}")
 
     # Create provider
     try:
