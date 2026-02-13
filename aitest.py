@@ -153,7 +153,7 @@ class CerebrasProvider(AIProvider):
         return content.strip()
 
     def analyze_website(self, html: str, url: str) -> Dict:
-        prompt = f"""Analyze this website and determine its type.
+        prompt = f"""Analyze this website and determine its type and topic.
 
 URL: {url}
 HTML: {html[:5000]}
@@ -162,48 +162,72 @@ Return JSON:
 {{
   "type": "chatbot|ecommerce|blog|portfolio|form|dashboard|documentation|social_media|other",
   "description": "Brief description",
+  "topic": "Main topic/domain (e.g., Vietnamese history, e-commerce, tech support, etc.)",
+  "language": "Primary language of the website (vi, en, etc.)",
   "key_features": ["feature1", "feature2"],
   "primary_interactions": ["interaction1", "interaction2"]
 }}
 
+IMPORTANT: Detect the website's primary language and main topic/domain.
 Only JSON, no markdown."""
 
         try:
             content = self._call_api(prompt)
             return json.loads(content)
         except:
-            return {"type": "other", "description": "Unknown", "key_features": []}
+            return {
+                "type": "other",
+                "description": "Unknown",
+                "topic": "general",
+                "language": "en",
+                "key_features": [],
+            }
 
     def generate_test_cases(self, analysis: Dict, language: str = "en") -> List[Dict]:
         website_type = analysis.get("type", "other")
         description = analysis.get("description", "")
+        topic = analysis.get("topic", "general")
+        detected_lang = analysis.get("language", "en")
+
+        # Use detected language if available, otherwise use user's choice
+        test_lang = detected_lang if detected_lang else language
 
         # Language-specific instructions
         lang_instruction = {
-            "vi": "Tạo câu hỏi bằng TIẾNG VIỆT. Câu hỏi phải phù hợp với văn hóa và ngữ cảnh Việt Nam.",
-            "en": "Generate questions in ENGLISH. Questions should be clear and natural.",
-        }.get(language, "Generate questions in English.")
+            "vi": f"""Tạo câu hỏi bằng TIẾNG VIỆT.
+Chủ đề: {topic}
+Câu hỏi phải:
+- Phù hợp với chủ đề "{topic}"
+- Sử dụng tiếng Việt tự nhiên
+- Phù hợp với văn hóa Việt Nam
+- Nếu là lịch sử Việt Nam: hỏi về các sự kiện, nhân vật, triều đại Việt Nam""",
+            "en": f"""Generate questions in ENGLISH.
+Topic: {topic}
+Questions should be clear, natural, and relevant to the topic.""",
+        }.get(test_lang, "Generate questions in the detected language.")
 
         prompt = f"""Generate test cases for this website.
 
 Type: {website_type}
 Description: {description}
-Language: {language.upper()}
+Topic/Domain: {topic}
+Website Language: {detected_lang}
+Test Language: {test_lang.upper()}
 
 {lang_instruction}
 
 Return JSON array of test cases:
 [
   {{
-    "question": "Test question or action in {language.upper()}",
+    "question": "Test question in {test_lang.upper()} about {topic}",
     "keywords": ["keyword1", "keyword2"],
     "category": "Category name",
     "difficulty": "easy|medium|hard"
   }}
 ]
 
-Generate 10-15 relevant test cases based on website type.
-IMPORTANT: All questions MUST be in {language.upper()} language.
+Generate 10-15 relevant test cases based on website type and topic.
+CRITICAL: All questions MUST be in {test_lang.upper()} language and about {topic}.
 Only JSON array, no markdown."""
 
         try:
@@ -268,24 +292,37 @@ class GeminiProvider(AIProvider):
         return response.text
 
     def analyze_website(self, html: str, url: str) -> Dict:
-        prompt = f"""Analyze website type.
+        prompt = f"""Analyze website type, topic, and language.
 URL: {url}
 HTML: {html[:5000]}
-Return JSON with type, description, key_features."""
+Return JSON with type, description, topic, language, key_features."""
         try:
             return json.loads(self._call_api(prompt))
         except:
-            return {"type": "other", "description": "Unknown", "key_features": []}
+            return {
+                "type": "other",
+                "description": "Unknown",
+                "topic": "general",
+                "language": "en",
+                "key_features": [],
+            }
 
     def generate_test_cases(self, analysis: Dict, language: str = "en") -> List[Dict]:
+        topic = analysis.get("topic", "general")
+        detected_lang = analysis.get("language", "en")
+        test_lang = detected_lang if detected_lang else language
+
         lang_instruction = {
-            "vi": "Tạo câu hỏi bằng TIẾNG VIỆT",
-            "en": "Generate questions in ENGLISH",
-        }.get(language, "Generate questions in English")
+            "vi": f"Tạo câu hỏi bằng TIẾNG VIỆT về {topic}. Phù hợp với văn hóa Việt Nam.",
+            "en": f"Generate questions in ENGLISH about {topic}.",
+        }.get(test_lang, f"Generate questions about {topic}")
 
         prompt = f"""Generate 10-15 test cases for {analysis.get('type')} website.
-{lang_instruction}.
-Return JSON array with question, keywords, category, difficulty."""
+Topic: {topic}
+Language: {test_lang}
+{lang_instruction}
+Return JSON array with question, keywords, category, difficulty.
+CRITICAL: Questions in {test_lang.upper()} about {topic}."""
         try:
             return json.loads(self._call_api(prompt))
         except:
