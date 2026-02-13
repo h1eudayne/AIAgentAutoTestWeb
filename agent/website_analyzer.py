@@ -3,9 +3,10 @@ AI-Powered Website Analyzer
 Automatically detects website type and generates intelligent test cases
 """
 
-import os
 import json
+import os
 from typing import Dict, List, Optional
+
 from openai import OpenAI
 
 
@@ -278,9 +279,7 @@ Consider:
         report.append("-" * 80)
         report.append(f"Type: {analysis.get('website_type', 'Unknown')}")
         report.append(f"Description: {analysis.get('description', 'N/A')}")
-        report.append(
-            f"Confidence: {analysis.get('confidence', 0.0) * 100:.1f}%"
-        )
+        report.append(f"Confidence: {analysis.get('confidence', 0.0) * 100:.1f}%")
         report.append("")
 
         # Key Features
