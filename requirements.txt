@@ -10,6 +10,7 @@ python-dotenv==1.0.0
 llama-cpp-python==0.2.27
 openai>=1.0.0               # OpenAI API for intelligent testing
 google-genai>=0.2.0         # Google Gemini API (FREE tier!) - NEW package
+cerebras-cloud-sdk>=1.0.0   # Cerebras Cloud SDK (ULTRA-FAST!) - llama-3.3-70b
 
 # Parsing
 beautifulsoup4==4.12.2
