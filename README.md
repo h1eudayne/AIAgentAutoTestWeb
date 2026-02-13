@@ -44,14 +44,17 @@
 | ⚡ **Parallel Execution** | pytest-xdist với auto CPU detection | ✅ |
 | 🐳 **Docker Support** | Containerization với Selenium Grid | ✅ |
 | 🔄 **CI/CD Pipeline** | GitHub Actions tự động test | ✅ |
+| 📊 **Allure Reports** | Beautiful test reporting | ✅ |
+| 🌐 **API Testing** | REST API testing integration | ✅ |
+| ⚡ **Performance Testing** | Load time và performance metrics | ✅ |
+| ♿ **Accessibility Testing** | Basic WCAG compliance checks | ✅ |
 
-### 🚧 Roadmap
+### 🚧 Future Enhancements
 
 | Tính năng | Mô tả | Priority |
 |-----------|-------|----------|
-| 📊 **Allure Reports** | Beautiful test reporting | High |
-| 🌐 **API Testing** | REST API testing integration | Medium |
-| ⚡ **Performance Testing** | Load time và performance metrics | Medium |
+| 🎨 **Visual AI Testing** | AI-powered visual testing | Medium |
+| 🔒 **Security Testing** | OWASP security checks | Medium |
 | ☁️ **Cloud Deployment** | Deploy agent lên cloud | Low |
 
 ---
