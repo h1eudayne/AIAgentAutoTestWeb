@@ -94,7 +94,7 @@ jobs:
     
     - name: Run tests in Docker
       run: |
-        docker-compose up --abort-on-container-exit --exit-code-from test-agent-standalone test-agent-standalone
+        docker compose up --abort-on-container-exit --exit-code-from test-agent-standalone test-agent-standalone
     
     - name: Upload Docker test reports
       if: always()
