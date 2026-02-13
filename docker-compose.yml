@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  # Selenium Hub for distributed testing
+  selenium-hub:
+    image: selenium/hub:4.16.0
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"
+      - "4442:4442"
+      - "4443:4443"
+    environment:
+      - SE_SESSION_REQUEST_TIMEOUT=300
+      - SE_SESSION_RETRY_INTERVAL=5
+      - SE_NODE_MAX_SESSIONS=5
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Chrome Node for Selenium Grid
+  chrome:
+    image: selenium/node-chrome:4.16.0
+    container_name: selenium-chrome
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=3
+      - SE_NODE_SESSION_TIMEOUT=300
+    shm_size: 2gb
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5555/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # AI Test Agent
+  test-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-test-agent
+    depends_on:
+      selenium-hub:
+        condition: service_healthy
+      chrome:
+        condition: service_healthy
+    environment:
+      - SELENIUM_HUB_URL=http://selenium-hub:4444/wd/hub
+      - PYTHONUNBUFFERED=1
+      - TEST_ENV=docker
+    volumes:
+      - ./reports:/app/reports
+      - ./memory:/app/memory
+      - ./screenshots:/app/screenshots
+    networks:
+      - test-network
+    command: pytest -n auto --dist loadscope tests/ -v
+
+  # Standalone mode (without Selenium Grid)
+  test-agent-standalone:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-test-agent-standalone
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TEST_ENV=docker
+    volumes:
+      - ./reports:/app/reports
+      - ./memory:/app/memory
+      - ./screenshots:/app/screenshots
+    networks:
+      - test-network
+    profiles:
+      - standalone
+    command: python run_tests.py
+
+networks:
+  test-network:
+    driver: bridge
+
+volumes:
+  reports:
+  memory:
+  screenshots:

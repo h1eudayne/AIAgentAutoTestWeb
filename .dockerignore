@@ -1,0 +1,99 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Models - Don't include in Docker image
+models/
+*.gguf
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.onnx
+
+# Reports and outputs
+reports/
+*.json
+*.html
+screenshots/
+test_screenshot.png
+
+# Memory
+memory/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation (except README)
+*.md
+!README.md
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.env
+
+# Logs
+*.log
+geckodriver.log
+chromedriver.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Credentials
+credentials.json
+secrets.json
+config.json
+*.key
+*.pem
+*.cert
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github/

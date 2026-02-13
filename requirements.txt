@@ -18,3 +18,8 @@ selenium-wire==5.1.0        # Network monitoring
 Pillow==10.1.0              # Screenshot comparison
 pixelmatch==0.3.0           # Visual diff
 coverage==7.4.0             # Coverage tracking
+
+# Testing & Parallel Execution
+pytest==8.3.4               # Test framework
+pytest-xdist==3.6.1         # Parallel test execution
+psutil==6.1.0               # CPU detection for parallel tests

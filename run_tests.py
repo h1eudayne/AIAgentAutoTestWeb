@@ -22,10 +22,14 @@ def run_tests(verbose=True):
     print(f"  • test_memory.py - State Memory (21 tests)")
     print(f"  • test_retry_handler.py - Retry Handler (24 tests)")
     print(f"  • test_multi_step_planner.py - Multi-step Planning (24 tests)")
-    print(f"  • test_network_monitor.py - Network Monitoring (NEW)")
-    print(f"  • test_screenshot_diff.py - Screenshot Diff (NEW)")
-    print(f"  • test_coverage_tracker.py - Coverage Tracking (NEW)")
-    print(f"  • test_self_healing.py - Self-healing Selectors (NEW)")
+    print(f"  • test_network_monitor.py - Network Monitoring (18 tests)")
+    print(f"  • test_screenshot_diff.py - Screenshot Diff (20 tests)")
+    print(f"  • test_coverage_tracker.py - Coverage Tracking (18 tests)")
+    print(f"  • test_self_healing.py - Self-healing Selectors (24 tests)")
+    print()
+    
+    print(f"{Fore.GREEN}💡 Tip: Tests run in parallel with pytest-xdist{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}   Use 'pytest -n auto' for automatic CPU detection{Style.RESET_ALL}")
     print()
     
     # Discover and run tests

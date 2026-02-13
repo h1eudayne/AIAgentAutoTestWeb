@@ -41,13 +41,17 @@
 | 📸 **Screenshot Diff** | Visual regression testing | ✅ |
 | 📊 **Coverage Tracking** | Đo lường test coverage tự động | ✅ |
 | 🔧 **Self-healing Selector** | Tự sửa selectors khi DOM thay đổi | ✅ |
+| ⚡ **Parallel Execution** | pytest-xdist với auto CPU detection | ✅ |
+| 🐳 **Docker Support** | Containerization với Selenium Grid | ✅ |
+| 🔄 **CI/CD Pipeline** | GitHub Actions tự động test | ✅ |
 
 ### 🚧 Roadmap
 
 | Tính năng | Mô tả | Priority |
 |-----------|-------|----------|
-| 🔄 **CI/CD Integration** | GitHub Actions, Jenkins | High |
-| ⚡ **Parallel Execution** | Chạy nhiều tests đồng thời | Medium |
+| 📊 **Allure Reports** | Beautiful test reporting | High |
+| 🌐 **API Testing** | REST API testing integration | Medium |
+| ⚡ **Performance Testing** | Load time và performance metrics | Medium |
 | ☁️ **Cloud Deployment** | Deploy agent lên cloud | Low |
 
 ---
@@ -56,6 +60,7 @@
 
 ### 1. Cài Đặt
 
+**Option A: Local Installation**
 ```bash
 # Clone repository
 git clone https://github.com/h1eudayne/AIAgentAutoTestWeb.git
@@ -63,6 +68,19 @@ cd AIAgentAutoTestWeb
 
 # Cài đặt dependencies
 pip install -r requirements.txt
+```
+
+**Option B: Docker (Recommended)**
+```bash
+# Clone repository
+git clone https://github.com/h1eudayne/AIAgentAutoTestWeb.git
+cd AIAgentAutoTestWeb
+
+# Build và chạy với Docker Compose
+docker-compose up test-agent
+
+# Hoặc standalone mode
+docker-compose --profile standalone up test-agent-standalone
 ```
 
 ### 2. Chạy Test
@@ -97,6 +115,24 @@ python main.py https://example.com
 ```
 
 ### 3. Chạy Test Suite
+
+**Local (Parallel với pytest-xdist):**
+```bash
+# Auto-detect CPUs và chạy parallel
+pytest -n auto --dist loadscope tests/ -v
+
+# Hoặc dùng unittest runner
+python run_tests.py
+```
+
+**Docker:**
+```bash
+# Chạy tests trong Docker
+docker-compose up test-agent
+
+# Xem logs
+docker-compose logs -f test-agent
+```
 
 ```bash
 python run_tests.py
