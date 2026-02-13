@@ -96,6 +96,15 @@ jobs:
       run: |
         docker compose up --abort-on-container-exit --exit-code-from test-agent-standalone test-agent-standalone
     
+    - name: Copy reports from Docker volume
+      if: always()
+      run: |
+        # Create reports directory if it doesn't exist
+        mkdir -p reports screenshots
+        # Copy reports from the container (even if it's stopped)
+        docker compose cp test-agent-standalone:/app/reports/. reports/ 2>/dev/null || echo "No reports generated"
+        docker compose cp test-agent-standalone:/app/screenshots/. screenshots/ 2>/dev/null || echo "No screenshots generated"
+    
     - name: Upload Docker test reports
       if: always()
       uses: actions/upload-artifact@v4
@@ -103,6 +112,16 @@ jobs:
         name: docker-test-reports
         path: reports/
         retention-days: 30
+        if-no-files-found: warn
+    
+    - name: Upload Docker screenshots
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-screenshots
+        path: screenshots/
+        retention-days: 7
+        if-no-files-found: warn
 
   lint:
     name: Code Quality
@@ -147,7 +166,7 @@ jobs:
         echo "Docker Test Status: ${{ needs.docker-test.result }}"
         echo "Lint Status: ${{ needs.lint.result }}"
         
-        if [ "${{ needs.test.result }}" != "success" ] || [ "${{ needs.docker-test.result }}" != "success" ]; then
+        if [ "${{ needs.test.result }}" != "success" ] || [ "${{ needs.docker-test.result }}" != "success" ] || [ "${{ needs.lint.result }}" != "success" ]; then
           echo "❌ Tests failed!"
           exit 1
         else
