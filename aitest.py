@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 AI Web Testing CLI - Test bất kỳ website nào với AI
-Usage: python aitest.py --url https://example.com
+Usage: python aitest.py --url https://example.com --lang vi
 """
 
 import json
@@ -20,6 +20,92 @@ from selenium.webdriver.common.keys import Keys
 
 # Load environment
 load_dotenv()
+
+
+# Language translations
+TRANSLATIONS = {
+    "vi": {
+        "setup_title": "🤖 THIẾT LẬP AI PROVIDER",
+        "choose_provider": "Chọn AI provider",
+        "enter_api_key": "📝 Nhập {} API key:",
+        "get_key_at": "   Lấy key tại: {}",
+        "api_key_prompt": "API Key",
+        "save_to_env": "Lưu vào .env file?",
+        "saved": "✓ Đã lưu vào {}",
+        "existing_key": "✓ Đã có API key: {}...",
+        "use_this_key": "Dùng key này?",
+        "enter_url": "🌐 Nhập URL cần test",
+        "url_label": "✓ URL: {}",
+        "provider_label": "✓ AI Provider: {}",
+        "provider_ready": "✓ AI provider sẵn sàng",
+        "error": "✗ Lỗi: {}",
+        "starting_browser": "🌐 Đang khởi động browser...",
+        "loading": "📱 Đang tải {}...",
+        "analyzing": "🔍 Phân tích website với AI...",
+        "analyzing_progress": "Đang phân tích",
+        "type_label": "✓ Loại: {}",
+        "description_label": "✓ Mô tả: {}",
+        "generating_tests": "🧪 Tạo test cases...",
+        "generating_progress": "Đang tạo",
+        "no_tests": "✗ Không tạo được test cases",
+        "generated_tests": "✓ Đã tạo {} test cases",
+        "test_cases_title": "📋 Test cases:",
+        "and_more": "  ... và {} test nữa",
+        "run_tests": "▶️  Chạy tests?",
+        "aborted": "Đã hủy",
+        "running_tests": "Đang chạy tests",
+        "results_title": "📊 KẾT QUẢ",
+        "total": "Tổng",
+        "correct": "Đúng",
+        "relevant": "Liên quan",
+        "report": "📄 Báo cáo: {}",
+        "choose_language": "Chọn ngôn ngữ test",
+        "language_label": "✓ Ngôn ngữ: {}",
+    },
+    "en": {
+        "setup_title": "🤖 AI PROVIDER SETUP",
+        "choose_provider": "Choose AI provider",
+        "enter_api_key": "📝 Enter {} API key:",
+        "get_key_at": "   Get key at: {}",
+        "api_key_prompt": "API Key",
+        "save_to_env": "Save to .env file?",
+        "saved": "✓ Saved to {}",
+        "existing_key": "✓ Existing API key: {}...",
+        "use_this_key": "Use this key?",
+        "enter_url": "🌐 Enter URL to test",
+        "url_label": "✓ URL: {}",
+        "provider_label": "✓ AI Provider: {}",
+        "provider_ready": "✓ AI provider ready",
+        "error": "✗ Error: {}",
+        "starting_browser": "🌐 Starting browser...",
+        "loading": "📱 Loading {}...",
+        "analyzing": "🔍 Analyzing website with AI...",
+        "analyzing_progress": "Analyzing",
+        "type_label": "✓ Type: {}",
+        "description_label": "✓ Description: {}",
+        "generating_tests": "🧪 Generating test cases...",
+        "generating_progress": "Generating",
+        "no_tests": "✗ No test cases generated",
+        "generated_tests": "✓ Generated {} test cases",
+        "test_cases_title": "📋 Test cases:",
+        "and_more": "  ... and {} more",
+        "run_tests": "▶️  Run tests?",
+        "aborted": "Aborted",
+        "running_tests": "Running tests",
+        "results_title": "📊 RESULTS",
+        "total": "Total",
+        "correct": "Correct",
+        "relevant": "Relevant",
+        "report": "📄 Report: {}",
+        "choose_language": "Choose test language",
+        "language_label": "✓ Language: {}",
+    },
+}
+
+
+def t(key: str, lang: str = "en") -> str:
+    """Get translation"""
+    return TRANSLATIONS.get(lang, TRANSLATIONS["en"]).get(key, key)
 
 
 class AIProvider:
@@ -87,19 +173,28 @@ Only JSON, no markdown."""
         except:
             return {"type": "other", "description": "Unknown", "key_features": []}
 
-    def generate_test_cases(self, analysis: Dict) -> List[Dict]:
+    def generate_test_cases(self, analysis: Dict, language: str = "en") -> List[Dict]:
         website_type = analysis.get("type", "other")
         description = analysis.get("description", "")
+
+        # Language-specific instructions
+        lang_instruction = {
+            "vi": "Tạo câu hỏi bằng TIẾNG VIỆT. Câu hỏi phải phù hợp với văn hóa và ngữ cảnh Việt Nam.",
+            "en": "Generate questions in ENGLISH. Questions should be clear and natural.",
+        }.get(language, "Generate questions in English.")
 
         prompt = f"""Generate test cases for this website.
 
 Type: {website_type}
 Description: {description}
+Language: {language.upper()}
+
+{lang_instruction}
 
 Return JSON array of test cases:
 [
   {{
-    "question": "Test question or action",
+    "question": "Test question or action in {language.upper()}",
     "keywords": ["keyword1", "keyword2"],
     "category": "Category name",
     "difficulty": "easy|medium|hard"
@@ -107,6 +202,7 @@ Return JSON array of test cases:
 ]
 
 Generate 10-15 relevant test cases based on website type.
+IMPORTANT: All questions MUST be in {language.upper()} language.
 Only JSON array, no markdown."""
 
         try:
@@ -180,8 +276,14 @@ Return JSON with type, description, key_features."""
         except:
             return {"type": "other", "description": "Unknown", "key_features": []}
 
-    def generate_test_cases(self, analysis: Dict) -> List[Dict]:
+    def generate_test_cases(self, analysis: Dict, language: str = "en") -> List[Dict]:
+        lang_instruction = {
+            "vi": "Tạo câu hỏi bằng TIẾNG VIỆT",
+            "en": "Generate questions in ENGLISH",
+        }.get(language, "Generate questions in English")
+
         prompt = f"""Generate 10-15 test cases for {analysis.get('type')} website.
+{lang_instruction}.
 Return JSON array with question, keywords, category, difficulty."""
         try:
             return json.loads(self._call_api(prompt))
