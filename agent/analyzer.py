@@ -1,6 +1,6 @@
 # Result Analyzer
-from typing import Dict, List
 from datetime import datetime
+from typing import Dict, List
 
 
 class ResultAnalyzer:

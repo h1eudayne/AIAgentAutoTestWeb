@@ -1,9 +1,10 @@
 # Self-healing Selector - Tự động sửa selectors khi DOM thay đổi
-from typing import Dict, List, Optional, Tuple
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
 import difflib
 from collections import defaultdict
+from typing import Dict, List, Optional, Tuple
+
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
 
 
 class SelfHealingSelector:

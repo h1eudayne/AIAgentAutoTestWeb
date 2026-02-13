@@ -1,10 +1,11 @@
 # Screenshot Diff - Visual regression testing
-from PIL import Image
-from pixelmatch.contrib.PIL import pixelmatch
+import json
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional, Tuple
-from datetime import datetime
-import json
+
+from PIL import Image
+from pixelmatch.contrib.PIL import pixelmatch
 
 
 class ScreenshotDiff:

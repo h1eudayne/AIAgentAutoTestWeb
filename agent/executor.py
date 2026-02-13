@@ -1,9 +1,10 @@
 # Test Executor with Retry Logic and Memory
-from typing import Dict, List
-from tools.browser import BrowserController
-from agent.retry_handler import RetryHandler, RetryableAction
-from agent.memory import StateMemory
 import time
+from typing import Dict, List
+
+from agent.memory import StateMemory
+from agent.retry_handler import RetryableAction, RetryHandler
+from tools.browser import BrowserController
 
 
 class TestExecutor:

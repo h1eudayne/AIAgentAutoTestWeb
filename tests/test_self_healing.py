@@ -2,18 +2,19 @@
 Unit tests for Self-healing Selector
 """
 
-import unittest
-from unittest.mock import Mock, MagicMock, patch
-from pathlib import Path
-import sys
 import json
+import sys
 import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from agent.self_healing import SelfHealingSelector
 from selenium.common.exceptions import NoSuchElementException
+
+from agent.self_healing import SelfHealingSelector
 
 
 class TestSelfHealingSelector(unittest.TestCase):

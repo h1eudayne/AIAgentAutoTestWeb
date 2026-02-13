@@ -1,7 +1,8 @@
 # API Tester - REST API testing integration
-import requests
-from typing import Dict, Optional, Any
 import json
+from typing import Any, Dict, Optional
+
+import requests
 from colorama import Fore, Style
 
 

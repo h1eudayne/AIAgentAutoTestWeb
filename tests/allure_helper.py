@@ -2,10 +2,11 @@
 Allure Helper - Utilities for Allure reporting
 """
 
-import allure
+import json
 from pathlib import Path
 from typing import Optional
-import json
+
+import allure
 
 
 def attach_screenshot(screenshot_path: str, name: str = "Screenshot"):

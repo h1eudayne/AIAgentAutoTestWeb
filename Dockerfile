@@ -1,5 +1,5 @@
 # Multi-stage Dockerfile for AI Agent Auto Test Web
-FROM python:3.11-slim as base
+FROM python:3.11-slim AS base
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
@@ -7,13 +7,17 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Install system dependencies
+# Install system dependencies including build tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     gnupg \
     unzip \
     curl \
     ca-certificates \
+    build-essential \
+    gcc \
+    g++ \
+    cmake \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Chrome (updated method for Debian 13+)

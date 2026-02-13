@@ -3,13 +3,15 @@ Multi-step Plan Executor
 Thực thi test plans với dependency management
 """
 
-from typing import Dict, List, Set, Optional
-from agent.multi_step_planner import TestPlan, TestStep, StepStatus, StepType
-from tools.browser import BrowserController
-from agent.retry_handler import RetryHandler, RetryableAction
-from agent.memory import StateMemory
-from colorama import Fore, Style
 import time
+from typing import Dict, List, Optional, Set
+
+from colorama import Fore, Style
+
+from agent.memory import StateMemory
+from agent.multi_step_planner import StepStatus, StepType, TestPlan, TestStep
+from agent.retry_handler import RetryableAction, RetryHandler
+from tools.browser import BrowserController
 
 
 class MultiStepExecutor:

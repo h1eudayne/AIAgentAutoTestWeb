@@ -2,15 +2,15 @@
 Unit tests for Retry Handler
 """
 
-import unittest
-from unittest.mock import Mock, MagicMock, patch
-from pathlib import Path
 import sys
+import unittest
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from agent.retry_handler import RetryHandler, SmartSelector, RetryableAction
+from agent.retry_handler import RetryableAction, RetryHandler, SmartSelector
 
 
 class TestSmartSelector(unittest.TestCase):

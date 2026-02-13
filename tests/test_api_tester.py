@@ -1,14 +1,15 @@
 """Unit tests for API Tester"""
 
-import unittest
-from unittest.mock import Mock, patch
 import sys
+import unittest
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from agent.api_tester import APITester
 import requests
+
+from agent.api_tester import APITester
 
 
 class TestAPITester(unittest.TestCase):

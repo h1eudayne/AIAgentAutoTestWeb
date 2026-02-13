@@ -1,5 +1,6 @@
 # Accessibility Checker - Basic WCAG compliance checks
-from typing import List, Dict
+from typing import Dict, List
+
 from colorama import Fore, Style
 
 

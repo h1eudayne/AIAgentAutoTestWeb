@@ -1,6 +1,7 @@
 # Performance Tester - Load time and performance metrics
-from typing import Dict, List
 import time
+from typing import Dict, List
+
 from colorama import Fore, Style
 
 

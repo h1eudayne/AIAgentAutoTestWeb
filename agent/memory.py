@@ -1,11 +1,11 @@
 # State Memory System - Agent learns from past tests
+import hashlib
 import json
 import os
+from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
-from collections import defaultdict
-import hashlib
 
 
 class StateMemory:

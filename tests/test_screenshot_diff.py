@@ -2,12 +2,13 @@
 Unit tests for Screenshot Diff
 """
 
-import unittest
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
+import shutil
 import sys
 import tempfile
-import shutil
+import unittest
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
+
 from PIL import Image
 
 # Add parent directory to path

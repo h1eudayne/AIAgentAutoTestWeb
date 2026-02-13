@@ -1,9 +1,9 @@
 # Network Monitor - Track API calls and performance
 import json
-from typing import Dict, List, Optional
+from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from collections import defaultdict
+from typing import Dict, List, Optional
 
 
 class NetworkMonitor:

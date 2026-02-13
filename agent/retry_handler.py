@@ -1,6 +1,7 @@
 # Retry Handler - Intelligent retry mechanism
 import time
-from typing import Dict, List, Callable
+from typing import Callable, Dict, List
+
 from colorama import Fore, Style
 
 

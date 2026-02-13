@@ -1,9 +1,9 @@
 # Coverage Tracker - Track test coverage
 import json
-from typing import Dict, List, Set, Optional
-from pathlib import Path
-from datetime import datetime
 from collections import defaultdict
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Set
 
 
 class CoverageTracker:

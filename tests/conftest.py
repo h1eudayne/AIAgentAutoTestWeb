@@ -2,14 +2,17 @@
 Pytest configuration and fixtures for parallel test execution
 """
 
-import pytest
-import tempfile
-import shutil
-from pathlib import Path
-import allure
-from tests.allure_helper import add_environment_info, add_categories, DEFAULT_CATEGORIES
-import sys
 import platform
+import shutil
+import sys
+import tempfile
+from pathlib import Path
+
+import allure
+import pytest
+
+from tests.allure_helper import (DEFAULT_CATEGORIES, add_categories,
+                                 add_environment_info)
 
 
 @pytest.fixture(scope="session")
