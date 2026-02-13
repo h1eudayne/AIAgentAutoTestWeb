@@ -86,7 +86,26 @@ docker-compose up test-agent
 docker-compose --profile standalone up test-agent-standalone
 ```
 
-### 2. Chạy Test
+### 2. Test Bất Kỳ Website Nào (NEW! 🎉)
+
+**CLI Tool - Đơn Giản Nhất:**
+```bash
+# Test bất kỳ URL nào
+python test_web.py --url https://example.com
+
+# Interactive mode
+python test_web.py --interactive
+
+# Test specific cases
+python test_web.py --url https://example.com --test-cases responsive
+
+# Visible browser (no headless)
+python test_web.py --url https://example.com --no-headless
+```
+
+**Xem hướng dẫn chi tiết:** [USER_GUIDE.md](USER_GUIDE.md)
+
+### 3. Chạy Test Với AI Agent
 
 **Fast Mode (Không cần LLM):**
 ```bash
@@ -117,7 +136,7 @@ python main.py https://example.com
   Pass Rate: 80.0%
 ```
 
-### 3. Chạy Test Suite
+### 4. Chạy Test Suite
 
 **Local (Parallel với pytest-xdist):**
 ```bash
