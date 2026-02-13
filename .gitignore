@@ -40,6 +40,9 @@ reports/
 *.html
 screenshots/
 test_screenshot.png
+allure-results/
+allure-report/
+.allure/
 
 # Memory - State memory files
 memory/

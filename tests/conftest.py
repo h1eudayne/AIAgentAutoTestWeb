@@ -6,6 +6,10 @@ import pytest
 import tempfile
 import shutil
 from pathlib import Path
+import allure
+from tests.allure_helper import add_environment_info, add_categories, DEFAULT_CATEGORIES
+import sys
+import platform
 
 
 @pytest.fixture(scope="session")
@@ -66,6 +70,25 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "unit: marks tests as unit tests"
     )
+    config.addinivalue_line(
+        "markers", "smoke: marks tests as smoke tests"
+    )
+    config.addinivalue_line(
+        "markers", "regression: marks tests as regression tests"
+    )
+    
+    # Add environment info for Allure
+    env_info = {
+        "Python": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+        "Platform": platform.system(),
+        "Platform Version": platform.version(),
+        "Architecture": platform.machine(),
+        "Pytest": pytest.__version__,
+    }
+    add_environment_info(env_info)
+    
+    # Add categories for Allure
+    add_categories(DEFAULT_CATEGORIES)
 
 
 def pytest_collection_modifyitems(config, items):
@@ -93,3 +116,26 @@ def pytest_xdist_auto_num_workers(config):
     
     # Use default behavior (all CPUs)
     return None
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """
+    Hook to capture test results and attach to Allure report.
+    """
+    outcome = yield
+    report = outcome.get_result()
+    
+    # Add test result to Allure
+    if report.when == "call":
+        if report.failed:
+            # Attach failure information
+            if hasattr(report, 'longreprtext'):
+                allure.attach(
+                    report.longreprtext,
+                    name="Failure Details",
+                    attachment_type=allure.attachment_type.TEXT
+                )
+        
+        # Add test duration
+        allure.dynamic.parameter("Duration", f"{report.duration:.2f}s")

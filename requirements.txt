@@ -23,3 +23,7 @@ coverage==7.4.0             # Coverage tracking
 pytest==8.3.4               # Test framework
 pytest-xdist==3.6.1         # Parallel test execution
 psutil==6.1.0               # CPU detection for parallel tests
+
+# Reporting
+allure-pytest==2.13.5       # Allure test reporting
+pytest-html==4.1.1          # HTML test reports
