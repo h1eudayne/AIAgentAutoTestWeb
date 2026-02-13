@@ -41,7 +41,13 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Set CMAKE_ARGS for llama-cpp-python build
+ENV CMAKE_ARGS="-DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS"
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libopenblas-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
