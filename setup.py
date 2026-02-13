@@ -5,8 +5,8 @@ Helps users configure API keys and environment
 """
 
 import os
-import sys
 import subprocess
+import sys
 from pathlib import Path
 
 
@@ -132,9 +132,9 @@ def verify_setup():
 
     # Check dependencies
     try:
-        import selenium
-        import openai
         import click
+        import openai
+        import selenium
 
         checks.append(("✓", "Core dependencies installed"))
     except ImportError:

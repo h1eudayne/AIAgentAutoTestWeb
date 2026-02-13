@@ -8,7 +8,9 @@ REPORTS_DIR = BASE_DIR / "reports"
 PROMPTS_DIR = BASE_DIR / "prompts"
 
 # LLaMA 3 Model settings
-LLAMA_MODEL_PATH = os.getenv("LLAMA_MODEL_PATH", "models/Meta-Llama-3-8B-Instruct-Q4_K_M.gguf")
+LLAMA_MODEL_PATH = os.getenv(
+    "LLAMA_MODEL_PATH", "models/Meta-Llama-3-8B-Instruct-Q4_K_M.gguf"
+)
 LLAMA_N_CTX = 2048  # Reduced for faster inference
 LLAMA_N_GPU_LAYERS = 0  # Set > 0 if using GPU
 LLAMA_N_THREADS = 4  # Number of CPU threads

@@ -9,6 +9,7 @@ python-dotenv==1.0.0
 # AI/LLM
 llama-cpp-python==0.2.27
 openai>=1.0.0               # OpenAI API for intelligent testing
+google-genai>=0.2.0         # Google Gemini API (FREE tier!) - NEW package
 
 # Parsing
 beautifulsoup4==4.12.2

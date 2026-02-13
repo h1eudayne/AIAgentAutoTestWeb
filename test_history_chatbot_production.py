@@ -6,20 +6,21 @@ URL: https://fe-history-mind-ai.vercel.app/
 This test uses advanced features without selenium-wire dependency
 """
 
-import time
 import os
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
+import time
 
-from agent.screenshot_diff import ScreenshotDiff
-from agent.self_healing import SelfHealingSelector
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
+from agent.accessibility_checker import AccessibilityChecker
 from agent.coverage_tracker import CoverageTracker
 from agent.performance_tester import PerformanceTester
-from agent.accessibility_checker import AccessibilityChecker
+from agent.screenshot_diff import ScreenshotDiff
+from agent.self_healing import SelfHealingSelector
 
 
 class HistoryChatbotTest:
@@ -128,7 +129,9 @@ class HistoryChatbotTest:
                     if element:
                         found_elements[element_name] = selector
                         print(f"   ✓ Found with: {selector}")
-                        self.coverage.track_element(self.url, selector, element_name, True)
+                        self.coverage.track_element(
+                            self.url, selector, element_name, True
+                        )
                         break
                 except Exception as e:
                     print(f"   ✗ Failed: {selector} - {str(e)[:50]}")

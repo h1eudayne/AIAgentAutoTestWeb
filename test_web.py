@@ -10,17 +10,18 @@ Usage:
     python test_web.py --interactive
 """
 
-import time
-import os
 import json
+import os
+import time
 from datetime import datetime
+
 import click
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class DynamicWebTester:
@@ -417,7 +418,11 @@ def main(url, headless, timeout, test_cases, interactive):
 
     # Interactive mode
     if interactive or not url:
-        click.echo(click.style("\n🧪 Web Testing Tool - Interactive Mode", fg="cyan", bold=True))
+        click.echo(
+            click.style(
+                "\n🧪 Web Testing Tool - Interactive Mode", fg="cyan", bold=True
+            )
+        )
         click.echo("=" * 80 + "\n")
 
         url = click.prompt("Enter URL to test", type=str)

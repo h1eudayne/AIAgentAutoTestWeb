@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Intelligent Web Testing with AI
-Automatically detects website type and generates appropriate test cases
+Intelligent Web Testing with Gemini AI
+Free tier: 60 requests/minute
 
 Usage:
-    python test_web_intelligent.py --url https://example.com
-    python test_web_intelligent.py --url https://chatbot-site.com --api-key YOUR_KEY
+    python test_web_gemini.py --url https://example.com
+    python test_web_gemini.py --url https://chatbot-site.com --api-key YOUR_KEY
 """
 
 import json
@@ -21,21 +21,21 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 
-from agent.website_analyzer import WebsiteAnalyzer
+from agent.gemini_analyzer import GeminiAnalyzer
 
 # Load .env file
 load_dotenv()
 
 
-class IntelligentWebTester:
-    """Intelligent web testing with AI-powered analysis"""
+class GeminiWebTester:
+    """Intelligent web testing with Gemini AI"""
 
     def __init__(self, url, api_key=None, headless=True):
         self.url = url
         self.headless = headless
         self.driver = None
         self.wait = None
-        self.analyzer = WebsiteAnalyzer(api_key=api_key)
+        self.analyzer = GeminiAnalyzer(api_key=api_key)
         self.analysis = None
         self.test_strategy = None
         self.results = []
@@ -62,9 +62,9 @@ class IntelligentWebTester:
             self.driver.quit()
 
     def analyze_website(self):
-        """Analyze website with AI"""
+        """Analyze website with Gemini"""
         click.echo("\n" + "=" * 80)
-        click.echo(click.style("🤖 AI WEBSITE ANALYSIS", fg="cyan", bold=True))
+        click.echo(click.style("🤖 GEMINI WEBSITE ANALYSIS", fg="cyan", bold=True))
         click.echo("=" * 80)
 
         # Load page
@@ -74,9 +74,9 @@ class IntelligentWebTester:
         # Get HTML content
         html_content = self.driver.page_source
 
-        click.echo("🔍 Analyzing website with GPT-4...")
+        click.echo("🔍 Analyzing website with Gemini...")
 
-        # Analyze with AI
+        # Analyze with Gemini
         self.analysis = self.analyzer.analyze_website(html_content, self.url)
 
         # Display analysis
@@ -94,7 +94,7 @@ class IntelligentWebTester:
         return self.analysis
 
     def generate_test_strategy(self):
-        """Generate test strategy with AI"""
+        """Generate test strategy with Gemini"""
         click.echo("\n" + "=" * 80)
         click.echo(click.style("🧪 GENERATING TEST STRATEGY", fg="cyan", bold=True))
         click.echo("=" * 80)
@@ -178,15 +178,13 @@ class IntelligentWebTester:
                 click.echo("⏳ Waiting for response...")
                 time.sleep(5)
 
-                # Get response (try to find new content)
+                # Get response
                 page_text = self.driver.find_element(By.TAG_NAME, "body").text
-
-                # Extract response (simple heuristic: text after question)
                 response = page_text.split(question)[-1][:500]
 
                 click.echo(f"Response: {response[:200]}...")
 
-                # Validate with AI
+                # Validate with Gemini
                 validation = self.analyzer.validate_response(
                     question, response, expected_keywords
                 )
@@ -195,15 +193,13 @@ class IntelligentWebTester:
                 if validation["is_valid"]:
                     click.echo(
                         click.style(
-                            f"✓ Valid (Score: {validation['score']:.2f})",
-                            fg="green",
+                            f"✓ Valid (Score: {validation['score']:.2f})", fg="green"
                         )
                     )
                 else:
                     click.echo(
                         click.style(
-                            f"✗ Invalid (Score: {validation['score']:.2f})",
-                            fg="red",
+                            f"✗ Invalid (Score: {validation['score']:.2f})", fg="red"
                         )
                     )
 
@@ -243,9 +239,6 @@ class IntelligentWebTester:
             click.echo(f"\n📋 Test {i}/{len(test_cases)}: {tc.get('name', 'Unnamed')}")
             click.echo(f"Priority: {tc.get('priority', 'medium')}")
             click.echo(f"Description: {tc.get('description', '')}")
-
-            # For now, just log the test case
-            # In production, you would implement actual test execution
             click.echo(click.style("⊘ Manual test case (not automated)", fg="yellow"))
 
     def generate_report(self):
@@ -254,7 +247,7 @@ class IntelligentWebTester:
         click.echo(click.style("📊 TEST REPORT", fg="cyan", bold=True))
         click.echo("=" * 80)
 
-        # Print AI analysis report
+        # Print Gemini analysis report
         report = self.analyzer.generate_report(self.analysis, self.test_strategy)
         click.echo(report)
 
@@ -282,11 +275,13 @@ class IntelligentWebTester:
 
         # Save JSON report
         os.makedirs("reports", exist_ok=True)
-        report_path = f"reports/intelligent_test_{int(time.time())}.json"
+        report_path = f"reports/gemini_test_{int(time.time())}.json"
 
         report_data = {
             "url": self.url,
             "timestamp": datetime.now().isoformat(),
+            "ai_provider": "Google Gemini",
+            "model": "gemini-1.5-flash",
             "analysis": self.analysis,
             "test_strategy": self.test_strategy,
             "results": self.results,
@@ -301,20 +296,14 @@ class IntelligentWebTester:
         """Run complete intelligent test"""
         try:
             self.setup_driver()
-
-            # Step 1: Analyze website
             self.analyze_website()
-
-            # Step 2: Generate test strategy
             self.generate_test_strategy()
 
-            # Step 3: Run tests based on website type
             if self.analysis["website_type"] == "chatbot":
                 self.run_chatbot_tests()
             else:
                 self.run_general_tests()
 
-            # Step 4: Generate report
             self.generate_report()
 
         except Exception as e:
@@ -329,11 +318,7 @@ class IntelligentWebTester:
 
 @click.command()
 @click.option("--url", "-u", required=True, help="URL to test")
-@click.option(
-    "--api-key",
-    "-k",
-    help="OpenAI API key (or set OPENAI_API_KEY env var)",
-)
+@click.option("--api-key", "-k", help="Gemini API key (or set GEMINI_API_KEY env var)")
 @click.option(
     "--headless/--no-headless",
     default=True,
@@ -341,25 +326,26 @@ class IntelligentWebTester:
 )
 def main(url, api_key, headless):
     """
-    Intelligent Web Testing with AI
+    Intelligent Web Testing with Gemini AI
 
-    Automatically detects website type and generates appropriate test cases.
+    Free tier: 60 requests/minute (very generous!)
 
     Examples:
-        python test_web_intelligent.py --url https://chatbot-site.com
-        python test_web_intelligent.py -u https://example.com --no-headless
-        python test_web_intelligent.py -u https://site.com -k YOUR_API_KEY
+        python test_web_gemini.py --url https://chatbot-site.com
+        python test_web_gemini.py -u https://example.com --no-headless
+        python test_web_gemini.py -u https://site.com -k YOUR_API_KEY
     """
 
     # Check API key
-    if not api_key and not os.environ.get("OPENAI_API_KEY"):
+    if not api_key and not os.environ.get("GEMINI_API_KEY"):
         click.echo(
-            click.style("❌ Error: OpenAI API key required!", fg="red", bold=True)
+            click.style("❌ Error: Gemini API key required!", fg="red", bold=True)
         )
         click.echo("\nSet API key using one of these methods:")
-        click.echo("  1. Environment variable: export OPENAI_API_KEY=your_key")
+        click.echo("  1. Environment variable: export GEMINI_API_KEY=your_key")
         click.echo("  2. Command line: --api-key YOUR_KEY")
-        click.echo("\nGet your API key at: https://platform.openai.com/api-keys")
+        click.echo("\nGet your FREE API key at: https://aistudio.google.com/app/apikey")
+        click.echo("Free tier: 60 requests/minute!")
         exit(1)
 
     # Validate URL
@@ -368,14 +354,15 @@ def main(url, api_key, headless):
 
     # Print header
     click.echo("\n" + "=" * 80)
-    click.echo(click.style("🤖 INTELLIGENT WEB TESTING", fg="green", bold=True))
+    click.echo(click.style("🤖 GEMINI INTELLIGENT WEB TESTING", fg="green", bold=True))
     click.echo("=" * 80)
     click.echo(f"URL: {url}")
     click.echo(f"Headless: {headless}")
+    click.echo(f"AI: Google Gemini 1.5 Flash (Free tier)")
     click.echo("=" * 80)
 
     # Run test
-    tester = IntelligentWebTester(url, api_key, headless)
+    tester = GeminiWebTester(url, api_key, headless)
     tester.run()
 
 
