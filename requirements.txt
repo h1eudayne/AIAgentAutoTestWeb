@@ -8,6 +8,7 @@ python-dotenv==1.0.0
 
 # AI/LLM
 llama-cpp-python==0.2.27
+openai>=1.0.0               # OpenAI API for intelligent testing
 
 # Parsing
 beautifulsoup4==4.12.2
