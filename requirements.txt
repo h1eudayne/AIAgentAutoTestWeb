@@ -27,3 +27,8 @@ psutil==6.1.0               # CPU detection for parallel tests
 # Reporting
 allure-pytest==2.13.5       # Allure test reporting
 pytest-html==4.1.1          # HTML test reports
+
+# API Testing
+requests==2.31.0            # HTTP library
+pytest-httpserver==1.0.10   # Mock HTTP server
+jsonschema==4.20.0          # JSON schema validation
