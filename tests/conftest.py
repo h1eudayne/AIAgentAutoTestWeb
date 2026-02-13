@@ -11,8 +11,7 @@ from pathlib import Path
 import allure
 import pytest
 
-from tests.allure_helper import (DEFAULT_CATEGORIES, add_categories,
-                                 add_environment_info)
+from tests.allure_helper import DEFAULT_CATEGORIES, add_categories, add_environment_info
 
 
 @pytest.fixture(scope="session")
