@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 import click
+import questionary
 from dotenv import load_dotenv, set_key
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -347,14 +348,12 @@ def create_provider(provider_name: str, api_key: str) -> AIProvider:
     "--lang",
     "-l",
     type=click.Choice(["vi", "en"], case_sensitive=False),
-    prompt="🌍 Choose test language / Chọn ngôn ngữ",
     help="Test language (vi=Vietnamese, en=English)",
 )
 @click.option(
     "--provider",
     "-p",
     type=click.Choice(["cerebras", "gemini"], case_sensitive=False),
-    prompt="🤖 Choose AI provider / Chọn AI provider",
     help="AI provider",
 )
 @click.option("--headless/--no-headless", default=True, help="Headless mode")
@@ -364,16 +363,50 @@ def main(url, lang, provider, headless, api_key):
     🚀 AI Web Testing CLI - Test any website with AI
 
     Examples:
-        python aitest.py --url https://example.com
-        python aitest.py -u https://chatbot.com --no-headless
+        python aitest.py --url https://example.com --lang vi
+        python aitest.py -u https://chatbot.com -l en --no-headless
     """
 
     click.echo("\n" + "=" * 80)
     click.echo(click.style("🚀 AI WEB TESTING CLI", fg="green", bold=True))
     click.echo("=" * 80)
 
+    # Choose language with interactive menu
+    if not lang:
+        lang = questionary.select(
+            "🌍 Choose test language / Chọn ngôn ngữ:",
+            choices=[
+                questionary.Choice("🇻🇳 Tiếng Việt", value="vi"),
+                questionary.Choice("🇬🇧 English", value="en"),
+            ],
+        ).ask()
+
+        if not lang:  # User cancelled
+            click.echo("Cancelled")
+            return
+
     lang_name = "Tiếng Việt" if lang == "vi" else "English"
     click.echo(f"\n✓ {t('language_label', lang).format(lang_name)}")
+
+    # Choose provider with interactive menu
+    if not provider:
+        provider = questionary.select(
+            "🤖 Choose AI provider / Chọn AI provider:",
+            choices=[
+                questionary.Choice(
+                    "⚡ Cerebras (llama-3.3-70b) - Ultra fast", value="cerebras"
+                ),
+                questionary.Choice(
+                    "🔷 Google Gemini (gemini-2.5-flash) - Free tier", value="gemini"
+                ),
+            ],
+        ).ask()
+
+        if not provider:  # User cancelled
+            click.echo("Cancelled")
+            return
+
+    click.echo(f"\n✓ {t('provider_label', lang).format(provider.upper())}")
 
     # Get URL
     if not url:

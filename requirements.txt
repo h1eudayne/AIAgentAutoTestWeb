@@ -5,6 +5,8 @@ selenium==4.16.0
 webdriver-manager==4.0.1
 colorama==0.4.6
 python-dotenv==1.0.0
+click>=8.0.0
+questionary>=2.0.0  # Interactive CLI menus
 
 # AI/LLM
 llama-cpp-python==0.2.27
