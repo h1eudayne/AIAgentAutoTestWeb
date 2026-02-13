@@ -63,15 +63,38 @@
 
 ### 1. Cài Đặt
 
-**Option A: Local Installation**
+**Automatic Setup (Khuyến nghị - 5 phút):**
 ```bash
 # Clone repository
 git clone https://github.com/h1eudayne/AIAgentAutoTestWeb.git
 cd AIAgentAutoTestWeb
 
-# Cài đặt dependencies
-pip install -r requirements.txt
+# Run setup script
+python setup.py
 ```
+
+Setup script sẽ tự động:
+- ✅ Kiểm tra Python version
+- ✅ Cài đặt dependencies
+- ✅ Tạo .env file
+- ✅ Hỏi OpenAI API key (optional)
+- ✅ Tạo folders cần thiết
+
+**Manual Setup:**
+```bash
+# Clone repository
+git clone https://github.com/h1eudayne/AIAgentAutoTestWeb.git
+cd AIAgentAutoTestWeb
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Setup API key (for intelligent testing)
+cp .env.example .env
+# Edit .env and add your OpenAI API key
+```
+
+**Xem hướng dẫn chi tiết:** [SETUP_GUIDE.md](SETUP_GUIDE.md)
 
 **Option B: Docker (Recommended)**
 ```bash
