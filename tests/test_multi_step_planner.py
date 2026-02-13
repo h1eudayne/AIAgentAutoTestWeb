@@ -1,6 +1,3 @@
-"""
-Unit tests for Multi-step Planner
-"""
 
 import unittest
 import json
@@ -154,9 +151,17 @@ class TestPlanClass(unittest.TestCase):
         
         # Initially only step1 is executable
         executable = self.plan.get_executable_steps(set())
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step1", executable_ids)
+        # step2 should not be executable yet
+        for step in executable:
+            if step.id == "step2":
+                self.fail("step2 should not be executable without step1 completed")
         
         # After step1 completes, step2 is executable
         executable = self.plan.get_executable_steps({"step1"})
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step2", executable_ids)
     
     def test_get_step_by_id(self):
         """Test getting step by ID"""
@@ -376,12 +381,24 @@ class TestComplexDependencies(unittest.TestCase):
         
         # Only step1 executable initially
         executable = plan.get_executable_steps(set())
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step1", executable_ids)
+        # Verify step2 and step3 are NOT executable
+        for step in executable:
+            self.assertNotIn(step.id, ["step2", "step3"])
         
         # After step1, only step2 executable
         executable = plan.get_executable_steps({"step1"})
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step2", executable_ids)
+        # Verify step3 is NOT executable yet
+        for step in executable:
+            self.assertNotEqual(step.id, "step3")
         
         # After step1 and step2, only step3 executable
         executable = plan.get_executable_steps({"step1", "step2"})
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step3", executable_ids)
     
     def test_parallel_execution(self):
         """Test parallel execution (no dependencies)"""
@@ -395,6 +412,7 @@ class TestComplexDependencies(unittest.TestCase):
         
         # All steps executable initially
         executable = plan.get_executable_steps(set())
+        self.assertEqual(len(executable), 3)
     
     def test_multiple_dependencies(self):
         """Test step with multiple dependencies"""
@@ -408,12 +426,25 @@ class TestComplexDependencies(unittest.TestCase):
         
         # step1 and step2 executable initially
         executable = plan.get_executable_steps(set())
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step1", executable_ids)
+        self.assertIn("step2", executable_ids)
+        # step3 should NOT be executable
+        for step in executable:
+            self.assertNotEqual(step.id, "step3")
         
         # step3 not executable with only step1 complete
         executable = plan.get_executable_steps({"step1"})
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step2", executable_ids)
+        # step3 should NOT be executable yet
+        for step in executable:
+            self.assertNotEqual(step.id, "step3")
         
         # step3 executable when both complete
         executable = plan.get_executable_steps({"step1", "step2"})
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step3", executable_ids)
     
     def test_diamond_dependency(self):
         """Test diamond dependency pattern"""
@@ -428,12 +459,25 @@ class TestComplexDependencies(unittest.TestCase):
         
         # Only step1 initially
         executable = plan.get_executable_steps(set())
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step1", executable_ids)
+        # Verify step2a, step2b, step3 are NOT executable
+        for step in executable:
+            self.assertNotIn(step.id, ["step2a", "step2b", "step3"])
         
         # step2a and step2b after step1
         executable = plan.get_executable_steps({"step1"})
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step2a", executable_ids)
+        self.assertIn("step2b", executable_ids)
+        # Verify step3 is NOT executable yet
+        for step in executable:
+            self.assertNotEqual(step.id, "step3")
         
         # step3 only after both step2a and step2b
         executable = plan.get_executable_steps({"step1", "step2a", "step2b"})
+        executable_ids = [s.id for s in executable]
+        self.assertIn("step3", executable_ids)
 
 
 if __name__ == "__main__":

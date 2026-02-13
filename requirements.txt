@@ -1,9 +1,20 @@
 # AI Web Testing Agent Dependencies
+
+# Core
 selenium==4.16.0
 webdriver-manager==4.0.1
+colorama==0.4.6
+python-dotenv==1.0.0
+
+# AI/LLM
 llama-cpp-python==0.2.27
+
+# Parsing
 beautifulsoup4==4.12.2
 lxml==4.9.3
-Pillow==10.1.0
-python-dotenv==1.0.0
-colorama==0.4.6
+
+# New Features
+selenium-wire==5.1.0        # Network monitoring
+Pillow==10.1.0              # Screenshot comparison
+pixelmatch==0.3.0           # Visual diff
+coverage==7.4.0             # Coverage tracking

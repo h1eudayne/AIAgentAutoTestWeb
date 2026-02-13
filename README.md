@@ -6,7 +6,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Selenium](https://img.shields.io/badge/Selenium-4.0+-green.svg)](https://www.selenium.dev/)
 [![LLaMA](https://img.shields.io/badge/LLaMA-3-orange.svg)](https://llama.meta.com/)
-[![Tests](https://img.shields.io/badge/Tests-69%20passed-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-129%20passed-brightgreen.svg)](tests/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
@@ -36,17 +36,19 @@
 | 🗺️ **Multi-step Planning** | Test plans phức tạp với dependencies | ✅ |
 | 🤖 **AI Reasoning** | LLaMA 3 phân tích UI và sinh test cases | ✅ |
 | ⚡ **Fast Mode** | Rule-based testing không cần LLM | ✅ |
-| 🧪 **Test Suite** | 69 tests với 100% pass rate | ✅ |
+| 🧪 **Test Suite** | 129 tests với 100% pass rate | ✅ |
+| 🌐 **Network Monitoring** | Theo dõi API calls và performance | ✅ |
+| 📸 **Screenshot Diff** | Visual regression testing | ✅ |
+| 📊 **Coverage Tracking** | Đo lường test coverage tự động | ✅ |
+| 🔧 **Self-healing Selector** | Tự sửa selectors khi DOM thay đổi | ✅ |
 
 ### 🚧 Roadmap
 
 | Tính năng | Mô tả | Priority |
 |-----------|-------|----------|
-| 📊 **Coverage Tracking** | Theo dõi test coverage tự động | High |
-| 🛠 **Self-healing Selector** | Tự sửa selector khi DOM thay đổi | High |
-| 📸 **Screenshot Diff** | So sánh visual regression | Medium |
-| 🌐 **Network Monitoring** | Theo dõi API calls và performance | Medium |
-| 🔄 **CI/CD Integration** | GitHub Actions, Jenkins | Low |
+| 🔄 **CI/CD Integration** | GitHub Actions, Jenkins | High |
+| ⚡ **Parallel Execution** | Chạy nhiều tests đồng thời | Medium |
+| ☁️ **Cloud Deployment** | Deploy agent lên cloud | Low |
 
 ---
 
@@ -68,6 +70,11 @@ pip install -r requirements.txt
 **Fast Mode (Không cần LLM):**
 ```bash
 python main_fast.py https://fe-history-mind-ai.vercel.app/
+```
+
+**Production Mode (Tất cả tính năng):**
+```bash
+python main_production.py https://example.com
 ```
 
 **AI Mode (Với LLaMA 3):**
@@ -342,6 +349,9 @@ python run_memory_demo.py
 
 # Multi-step demo
 python demo_multi_step.py
+
+# Advanced features demo
+python demo_advanced_features.py
 
 # View memory
 python view_memory.py

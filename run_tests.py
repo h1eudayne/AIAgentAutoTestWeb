@@ -15,8 +15,18 @@ init(autoreset=True)
 def run_tests(verbose=True):
     """Run all tests"""
     print(f"\n{Fore.CYAN}{'='*80}{Style.RESET_ALL}")
-    print(f"{Fore.CYAN}🧪 Running Test Suite{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}🧪 Running Complete Test Suite{Style.RESET_ALL}")
     print(f"{Fore.CYAN}{'='*80}{Style.RESET_ALL}\n")
+    
+    print(f"{Fore.YELLOW}Test Modules:{Style.RESET_ALL}")
+    print(f"  • test_memory.py - State Memory (21 tests)")
+    print(f"  • test_retry_handler.py - Retry Handler (24 tests)")
+    print(f"  • test_multi_step_planner.py - Multi-step Planning (24 tests)")
+    print(f"  • test_network_monitor.py - Network Monitoring (NEW)")
+    print(f"  • test_screenshot_diff.py - Screenshot Diff (NEW)")
+    print(f"  • test_coverage_tracker.py - Coverage Tracking (NEW)")
+    print(f"  • test_self_healing.py - Self-healing Selectors (NEW)")
+    print()
     
     # Discover and run tests
     loader = unittest.TestLoader()
