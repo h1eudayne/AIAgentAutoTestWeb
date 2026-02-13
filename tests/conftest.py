@@ -24,9 +24,9 @@ def worker_temp_dir(tmp_path_factory, worker_id):
     else:
         # Worker process: gw0, gw1, gw2, etc.
         temp_dir = tmp_path_factory.mktemp(f"test_data_{worker_id}")
-    
+
     yield temp_dir
-    
+
     # Cleanup
     if temp_dir.exists():
         shutil.rmtree(temp_dir, ignore_errors=True)
@@ -40,9 +40,9 @@ def isolated_temp_dir(worker_temp_dir):
     """
     test_dir = worker_temp_dir / f"test_{id(object())}"
     test_dir.mkdir(parents=True, exist_ok=True)
-    
+
     yield test_dir
-    
+
     # Cleanup
     if test_dir.exists():
         shutil.rmtree(test_dir, ignore_errors=True)
@@ -64,19 +64,11 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
     )
-    config.addinivalue_line(
-        "markers", "integration: marks tests as integration tests"
-    )
-    config.addinivalue_line(
-        "markers", "unit: marks tests as unit tests"
-    )
-    config.addinivalue_line(
-        "markers", "smoke: marks tests as smoke tests"
-    )
-    config.addinivalue_line(
-        "markers", "regression: marks tests as regression tests"
-    )
-    
+    config.addinivalue_line("markers", "integration: marks tests as integration tests")
+    config.addinivalue_line("markers", "unit: marks tests as unit tests")
+    config.addinivalue_line("markers", "smoke: marks tests as smoke tests")
+    config.addinivalue_line("markers", "regression: marks tests as regression tests")
+
     # Add environment info for Allure
     env_info = {
         "Python": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
@@ -86,7 +78,7 @@ def pytest_configure(config):
         "Pytest": pytest.__version__,
     }
     add_environment_info(env_info)
-    
+
     # Add categories for Allure
     add_categories(DEFAULT_CATEGORIES)
 
@@ -107,13 +99,14 @@ def pytest_xdist_auto_num_workers(config):
     Returns None to use default behavior (auto-detect CPUs).
     """
     import os
-    
+
     # Check if running in CI environment
     if os.environ.get("CI"):
         # Use half of available CPUs in CI to avoid resource exhaustion
         import os
+
         return max(1, os.cpu_count() // 2)
-    
+
     # Use default behavior (all CPUs)
     return None
 
@@ -125,17 +118,17 @@ def pytest_runtest_makereport(item, call):
     """
     outcome = yield
     report = outcome.get_result()
-    
+
     # Add test result to Allure
     if report.when == "call":
         if report.failed:
             # Attach failure information
-            if hasattr(report, 'longreprtext'):
+            if hasattr(report, "longreprtext"):
                 allure.attach(
                     report.longreprtext,
                     name="Failure Details",
-                    attachment_type=allure.attachment_type.TEXT
+                    attachment_type=allure.attachment_type.TEXT,
                 )
-        
+
         # Add test duration
         allure.dynamic.parameter("Duration", f"{report.duration:.2f}s")

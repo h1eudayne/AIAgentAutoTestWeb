@@ -32,10 +32,10 @@ jobs:
     
     - name: Install Chrome
       run: |
-        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google.list
+        wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo apt-get update
-        sudo apt-get install -y google-chrome-stable
+        sudo apt-get install -y /tmp/google-chrome.deb
+        rm /tmp/google-chrome.deb
     
     - name: Install ChromeDriver
       run: |
